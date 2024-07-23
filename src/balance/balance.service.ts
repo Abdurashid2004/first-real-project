@@ -15,8 +15,8 @@ export class BalanceService {
   ) {}
 
   async create(createBalanceDto: CreateBalanceDto) {
-    const { amount, driver_id } = createBalanceDto;
-    const driver = await this.driverRepo.findByPk(driver_id);
+    const { amount, driverId } = createBalanceDto;
+    const driver = await this.driverRepo.findByPk(driverId);
     if (!driver) throw new Error("Driver not found");
     driver.total_balance += amount;
     return await this.balanceRepo.create(createBalanceDto);
@@ -27,7 +27,7 @@ export class BalanceService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} balance`;
+    return this.balanceRepo.findByPk(id);
   }
 
   update(id: number, updateBalanceDto: UpdateBalanceDto) {
@@ -35,6 +35,6 @@ export class BalanceService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} balance`;
+    return this.balanceRepo.destroy({ where: { id } });
   }
 }

@@ -29,7 +29,7 @@ import { CookieGetter } from "../decorators/cookie_getter.decorator";
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  // @UseGuards(CreatorGuard)
+  @UseGuards(CreatorGuard)
   @ApiOperation({ summary: "Add Admin" })
   @ApiResponse({
     status: 200,

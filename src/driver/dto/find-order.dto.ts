@@ -1,18 +1,20 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { IsMongoId, IsNotEmpty, IsNumber } from "class-validator";
 
 export class FindOrderDto {
   @ApiProperty({
-    example: "Tashkent",
+    example: 4,
     description: "The city where the driver is from",
   })
   @IsNotEmpty()
+  @IsNumber()
   from: number;
 
   @ApiProperty({
-    example: "Samarkand",
+    example: 3,
     description: "The city where the driver is going to",
   })
   @IsNotEmpty()
+  @IsNumber()
   to: number;
 }

@@ -70,7 +70,7 @@ export class CreateDeliveryOrderDto {
     example: "+1234567890",
     description: "Phone number of the recipient",
   })
-  @IsPhoneNumber(null)
+  @IsPhoneNumber()
   @IsNotEmpty()
   recipient_phone: string;
 

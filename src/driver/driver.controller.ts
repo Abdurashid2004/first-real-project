@@ -195,12 +195,8 @@ export class DriverController {
     description: "Return all drivers",
     type: [Driver],
   })
-  getAllDrivers(
-    @Query("name") name?: string,
-    @Query("surname") surname?: string,
-    @Query("phone") phone?: string
-  ) {
-    return this.driverService.findAll({ name, surname, phone });
+  async getAllDrivers(@Query("search") search: any) {
+    return this.driverService.findAll(search);
   }
 
   @Get("unactives")
@@ -256,7 +252,7 @@ export class DriverController {
     description: "Orders found successfully",
     type: [TaxiOrder],
   })
-  findOrder(@Body() findOrderDto: FindOrderDto) {
+  async findOrder(@Body() findOrderDto: FindOrderDto) {
     return this.driverService.findOrder(findOrderDto);
   }
 }

@@ -99,7 +99,7 @@ export class DriverService {
 
     await this.driverRepo.create({ phone });
 
-    return { status: "Success", message };
+    return { status: "Success", message, otp };
   }
 
   // verify otp
@@ -312,27 +312,35 @@ export class DriverService {
 
   async refreshToken(driverId: number, refreshToken: string, res: Response) {
     const decodedToken = await this.jwtService.decode(refreshToken);
-    if (driverId !== decodedToken["id"]) {
-      throw new BadRequestException("User not matched");
+    if (!decodedToken) {
+      throw new BadRequestException("Invalid refresh token");
     }
+
+    console.log("Decoded Token:", decodedToken);
+
+    if (driverId !== decodedToken["id"]) {
+      throw new BadRequestException("Driver not matched");
+    }
+
     const driver = await this.driverRepo.findByPk(driverId);
     if (!driver || !driver.hashed_refresh_token) {
       throw new BadRequestException("Refresh token not found");
     }
-    const isMatchedtoken = await bcrypt.compare(
+
+    const isMatchedToken = await bcrypt.compare(
       refreshToken,
       driver.hashed_refresh_token
     );
-    if (!isMatchedtoken) throw new ForbiddenException("Forbidden");
+    if (!isMatchedToken) throw new ForbiddenException("Forbidden");
+
     const tokens = await this.getTokens(driver);
 
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
     const updatedDriver = await this.driverRepo.update(
-      {
-        hashed_refresh_token,
-      },
+      { hashed_refresh_token },
       { where: { id: driver.id }, returning: true }
     );
+
     res.cookie("refresh_token", tokens.refreshToken, {
       maxAge: 15 * 24 * 60 * 60 * 1000,
       httpOnly: true,
@@ -343,6 +351,7 @@ export class DriverService {
       driver: updatedDriver[1][0],
       tokens,
     };
+
     return response;
   }
 
@@ -351,7 +360,7 @@ export class DriverService {
   async logOut(refreshToken: string, res: Response) {
     try {
       const userdata = await this.jwtService.verify(refreshToken, {
-        secret: process.env.REFRESH_TOKEN_KEY_CLIENT,
+        secret: process.env.REFRESH_TOKEN_KEY_DRIVER,
       });
       console.log(userdata);
 
@@ -392,21 +401,13 @@ export class DriverService {
 
   // search driver
 
-  async findAll(searchParams: {
-    name?: string;
-    surname?: string;
-    phone?: string;
-  }): Promise<Driver[]> {
-    const whereCondition = {};
+  async findAll(searchParams: { [key: string]: any }): Promise<Driver[]> {
+    const whereCondition: any = {};
 
-    if (searchParams.name) {
-      whereCondition["name"] = { [Op.like]: `%${searchParams.name}%` };
-    }
-    if (searchParams.surname) {
-      whereCondition["surname"] = { [Op.like]: `%${searchParams.surname}%` };
-    }
-    if (searchParams.phone) {
-      whereCondition["phone"] = { [Op.like]: `%${searchParams.phone}%` };
+    for (const key in searchParams) {
+      if (searchParams[key]) {
+        whereCondition[key] = { [Op.like]: `%${searchParams[key]}%` };
+      }
     }
 
     return this.driverRepo.findAll({
@@ -454,28 +455,28 @@ export class DriverService {
   async findOrder(findOrderDto: FindOrderDto) {
     const { from, to } = findOrderDto;
 
-    if (!from || !to) {
+    if (from === undefined || to === undefined) {
       throw new NotFoundException("Invalid search criteria");
     }
 
     try {
+      console.log(`Searching for orders from ${from} to ${to}`);
+
       const orders = await this.orderRepo.findAll({
         where: {
           from_distinct_id: { [Op.eq]: from },
           to_distinct_id: { [Op.eq]: to },
         },
-        include: { all: true },
+        include: [],
       });
 
-      if (!orders.length) {
-        throw new NotFoundException(
-          "No orders found for the specified criteria"
-        );
-      }
+      // if (orders.length === 0) {
+      //   throw new NotFoundException("No orders found for the specified criteria");
+      // }
 
       return orders;
     } catch (error) {
-      // Log the error or handle it as necessary
+      console.error("Error while searching for orders:", error);
       throw new Error("Error while searching for orders");
     }
   }

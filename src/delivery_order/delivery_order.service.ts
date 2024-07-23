@@ -9,8 +9,9 @@ import axios from "axios";
 import { UpdateDeliveryOrderDto } from "./dto/update-delivery_order.dto";
 import { DeliveryOrder } from "./model/delivery_order.entity";
 import { CreateDeliveryOrderDto } from "./dto/create-delivery_order.dto";
-import { Region } from "src/region/model/region.model";
+import { Region } from "../region/model/region.model";
 import { District } from "../districts/models/district.model";
+import { ClientService } from "../client/client.service";
 
 @Injectable()
 export class DeliveryOrderService {
@@ -20,7 +21,8 @@ export class DeliveryOrderService {
     @InjectModel(Region)
     private readonly regionModel: typeof Region,
     @InjectModel(District)
-    private readonly discritModel: typeof District
+    private readonly discritModel: typeof District,
+    private readonly clientsevice: ClientService
   ) {}
 
   private async getCoordinates(
@@ -54,6 +56,14 @@ export class DeliveryOrderService {
 
       const DiscritFrom = await this.discritModel.findByPk(from_district_id);
 
+      const client = await this.clientsevice.findOneClient(
+        createDeliveryOrderDto.clientId
+      );
+
+      if (!client) {
+        throw new NotFoundException("Client with the given ID does not exist");
+      }
+
       const toDiscrit = await this.discritModel.findByPk(to_district_id);
       DiscritFrom.region_id;
 
@@ -86,7 +96,7 @@ export class DeliveryOrderService {
         duration,
         ...createDeliveryOrderDto,
       });
-      return "Ok";
+      return response;
     } catch (error) {
       console.error(error); // Log the error for debugging purposes
       throw new InternalServerErrorException("Failed to create delivery order");
