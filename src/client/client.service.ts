@@ -25,6 +25,7 @@ import { UpdatePasswordAdminDto } from "./dto/updatePassword.dto";
 import { FindUserDto } from "./dto/find-user.dto";
 import { Op } from "sequelize";
 
+
 @Injectable()
 export class ClientService {
   constructor(
@@ -412,5 +413,55 @@ export class ClientService {
       throw new BadRequestException(`There is no Client with such an ${id}`);
     }
     return client1;
+  }
+
+  // Admin add client
+  async createClient(registerClientDto: RegisterClientDto, res: Response) {
+    try {
+      const { phone, password, confirm_password } = registerClientDto;
+
+      // Tekshiramiz login allaqachon mavjud emasligini
+      const existingClient = await this.clientRepo.findOne({
+        where: { phone },
+      });
+      if (existingClient) {
+        throw new BadRequestException(
+          "There is already a client with this login"
+        );
+      }
+
+      // Parollar mosligini tekshiramiz
+      if (password !== confirm_password) {
+        throw new BadRequestException("Passwords do not match");
+      }
+
+      // Parolni hash qilamiz
+      const hashed_password = await bcrypt.hash(password, 7);
+      const newClient = await this.clientRepo.create({
+        ...registerClientDto,
+        hashed_password: hashed_password,
+        is_active: true,
+      });
+
+      // Tokenlarni yaratamiz
+      const tokens = await this.getTokens(newClient);
+      newClient.hashed_refresh_token = await bcrypt.hash(
+        tokens.refresh_token,
+        7
+      );
+      await newClient.save();
+      res.cookie("refresh_token", tokens.refresh_token, {
+        maxAge: 15 * 24 * 60 * 60 * 1000, // 15 kun
+        httpOnly: true,
+      });
+
+      const response = {
+        message: "Client created successfully",
+      };
+
+      return response;
+    } catch (error) {
+      res.status(401).json({ message: "Access Denied. No token provided." });
+    }
   }
 }

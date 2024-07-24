@@ -21,5 +21,6 @@ import { Otp } from "../otp/model/otp.model";
   ],
   controllers: [DriverController],
   providers: [DriverService],
+  exports: [DriverService],
 })
 export class DriverModule {}

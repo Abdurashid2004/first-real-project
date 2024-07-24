@@ -3,7 +3,7 @@ import { CreateBalanceDto } from "./dto/create-balance.dto";
 import { UpdateBalanceDto } from "./dto/update-balance.dto";
 import { InjectModel } from "@nestjs/sequelize";
 import { Balance } from "./model/balance.entity";
-import { Driver } from "src/driver/model/driver.entity";
+import { Driver } from "../driver/model/driver.entity";
 
 @Injectable()
 export class BalanceService {

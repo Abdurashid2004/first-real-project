@@ -35,6 +35,7 @@ import { VerifyOtpDto } from "./dto/verify-otp.dto";
 import { RegisterDriverDto } from "./dto/register-driver.dto";
 import { SendDriverDto } from "./dto/send-driver.dto";
 import { CookieGetter } from "../decorators/cookie_getter.decorator";
+import { CreateAdminDrivertDto } from "./dto/only-Admin-create.dto";
 
 @ApiTags("driver")
 @Controller("driver")
@@ -254,5 +255,32 @@ export class DriverController {
   })
   async findOrder(@Body() findOrderDto: FindOrderDto) {
     return this.driverService.findOrder(findOrderDto);
+  }
+
+  @Post("register")
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "photo", maxCount: 1 },
+      { name: "prava", maxCount: 1 },
+    ])
+  )
+  @ApiOperation({ summary: "Register a new driver with photo and prava files" })
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({ type: RegisterDriverDto })
+  @ApiResponse({
+    status: 201,
+    description: "Driver registered successfully",
+    type: Driver,
+  })
+  createDriver(
+    @Body() registerDriverDto: RegisterDriverDto,
+    @UploadedFiles()
+    files: { photo?: Express.Multer.File[]; prava?: Express.Multer.File[] },
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const photo = files.photo?.[0];
+    const prava = files.prava?.[0];
+    // console.log(res);
+    return this.driverService.createDriver(registerDriverDto, photo, prava, res);
   }
 }

@@ -4,7 +4,6 @@ import {
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { UpdateDriverDto } from "./dto/update-driver.dto";
 import { InjectModel } from "@nestjs/sequelize";
@@ -32,7 +31,6 @@ import { SendDriverDto } from "./dto/send-driver.dto";
 export class DriverService {
   constructor(
     @InjectModel(Driver) private driverRepo: typeof Driver,
-    @InjectModel(Region) private regionRepo: typeof Region,
     @InjectModel(Otp) private readonly otpRepo: typeof Otp,
     @InjectModel(TaxiOrder) private orderRepo: typeof TaxiOrder,
     private SmsService: SmsService,
@@ -308,8 +306,6 @@ export class DriverService {
     };
   }
 
-  ///////////////////////////////////////////////////
-
   async refreshToken(driverId: number, refreshToken: string, res: Response) {
     const decodedToken = await this.jwtService.decode(refreshToken);
     if (!decodedToken) {
@@ -397,8 +393,6 @@ export class DriverService {
     }
   }
 
-  //////////////////////////////////////////////////
-
   // search driver
 
   async findAll(searchParams: { [key: string]: any }): Promise<Driver[]> {
@@ -454,6 +448,7 @@ export class DriverService {
 
   async findOrder(findOrderDto: FindOrderDto) {
     const { from, to } = findOrderDto;
+    console.log(from, to);
 
     if (from === undefined || to === undefined) {
       throw new NotFoundException("Invalid search criteria");
@@ -469,15 +464,74 @@ export class DriverService {
         },
         include: [],
       });
+      console.log(orders);
 
       // if (orders.length === 0) {
-      //   throw new NotFoundException("No orders found for the specified criteria");
+      //   throw new NotFoundException(
+      //     "No orders found for the specified criteria"
+      //   );
       // }
 
       return orders;
     } catch (error) {
       console.error("Error while searching for orders:", error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
       throw new Error("Error while searching for orders");
     }
+  }
+
+  // Admin add client
+
+  async createDriver(
+    registerDriverDto: RegisterDriverDto,
+    photo: Express.Multer.File,
+    prava: Express.Multer.File,
+    res: Response
+  ) {
+    const { phone, password } = registerDriverDto;
+
+    const findDriver = await this.driverRepo.findOne({
+      where: { phone },
+    });
+
+    if (!photo || !prava) throw new BadRequestException("Photos are required!");
+
+    const img = (await this.cloudinaryService.uploadImage(photo)).url;
+    const img1 = (await this.cloudinaryService.uploadImage(prava)).url;
+
+    const hashedPassword = await bcrypt.hash(password, 7);
+    const updatedDriver = await this.driverRepo.update(
+      {
+        photo: img,
+        prava: img1,
+        ...registerDriverDto,
+        hashed_password: hashedPassword,
+        isActive: true,
+      },
+      {
+        where: { id: findDriver.id },
+        returning: true,
+      }
+    );
+    const driver = updatedDriver[1][0];
+
+    const tokens = await this.getTokens(driver);
+    const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 7);
+
+    await this.driverRepo.update(
+      { hashed_refresh_token: hashedRefreshToken },
+      { where: { id: findDriver.id } }
+    );
+
+    res.cookie("refresh_token", tokens.refreshToken, {
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    return {
+      message: "Driver successfully added",
+    };
   }
 }

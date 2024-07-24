@@ -14,5 +14,6 @@ import { Region } from "../region/model/region.model";
 
   controllers: [DistrictsController],
   providers: [DistrictsService],
+  exports: [DistrictsService],
 })
 export class DistrictsModule {}

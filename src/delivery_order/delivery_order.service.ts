@@ -12,6 +12,7 @@ import { CreateDeliveryOrderDto } from "./dto/create-delivery_order.dto";
 import { Region } from "../region/model/region.model";
 import { District } from "../districts/models/district.model";
 import { ClientService } from "../client/client.service";
+import { DistrictsService } from "../districts/districts.service";
 
 @Injectable()
 export class DeliveryOrderService {
@@ -22,7 +23,8 @@ export class DeliveryOrderService {
     private readonly regionModel: typeof Region,
     @InjectModel(District)
     private readonly discritModel: typeof District,
-    private readonly clientsevice: ClientService
+    private readonly clientsevice: ClientService,
+    private districtService: DistrictsService
   ) {}
 
   private async getCoordinates(
@@ -64,6 +66,26 @@ export class DeliveryOrderService {
         throw new NotFoundException("Client with the given ID does not exist");
       }
 
+      const district_from = await this.districtService.findOne(
+        createDeliveryOrderDto.from_district_id
+      );
+
+      if (!district_from) {
+        throw new NotFoundException(
+          "District_from with the given ID does not exist"
+        );
+      }
+
+      const district_to = await this.districtService.findOne(
+        createDeliveryOrderDto.to_district_id
+      );
+
+      if (!district_to) {
+        throw new NotFoundException(
+          "District_to with the given ID does not exist"
+        );
+      }
+
       const toDiscrit = await this.discritModel.findByPk(to_district_id);
       DiscritFrom.region_id;
 
@@ -96,7 +118,9 @@ export class DeliveryOrderService {
         duration,
         ...createDeliveryOrderDto,
       });
-      return response;
+
+      // Soddalashtirilgan javobni qaytaring
+      return { distance, duration };
     } catch (error) {
       console.error(error); // Log the error for debugging purposes
       throw new InternalServerErrorException("Failed to create delivery order");

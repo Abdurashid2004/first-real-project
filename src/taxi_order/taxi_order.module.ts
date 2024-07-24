@@ -5,13 +5,17 @@ import { TaxiOrder } from "./model/taxi_order.model";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { JwtModule } from "@nestjs/jwt";
 
-import { Region } from "src/region/model/region.model";
-import { District } from "src/districts/models/district.model";
+import { Region } from "../region/model/region.model";
+import { District } from "../districts/models/district.model";
+import { ClientModule } from "../client/client.module";
+import { DistrictsModule } from "../districts/districts.module";
 
 @Module({
   imports: [
     SequelizeModule.forFeature([TaxiOrder, Region, District]),
     JwtModule.register({}),
+    ClientModule,
+    DistrictsModule
   ],
 
   controllers: [TaxiOrderController],

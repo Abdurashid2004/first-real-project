@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateTaxiOrderDto } from "./dto/create-taxi_order.dto";
 import { UpdateTaxiOrderDto } from "./dto/update-taxi_order.dto";
 import { TaxiOrder } from "./model/taxi_order.model";
@@ -6,6 +10,8 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Region } from "../region/model/region.model";
 import { District } from "../districts/models/district.model";
 import axios from "axios";
+import { ClientService } from "../client/client.service";
+import { DistrictsService } from "../districts/districts.service";
 
 @Injectable()
 export class TaxiOrderService {
@@ -14,7 +20,9 @@ export class TaxiOrderService {
     @InjectModel(Region)
     private readonly regionModel: typeof Region,
     @InjectModel(District)
-    private readonly discritModel: typeof District
+    private readonly discritModel: typeof District,
+    private readonly clientsevice: ClientService,
+    private readonly disrtictService: DistrictsService
   ) {}
 
   private async getCoordinates(
@@ -45,6 +53,30 @@ export class TaxiOrderService {
   async create(CreateTaxiOrderDto: CreateTaxiOrderDto) {
     try {
       const { from_distinct_id, to_distinct_id } = CreateTaxiOrderDto;
+
+      const client = await this.clientsevice.findOneClient(
+        CreateTaxiOrderDto.clientId
+      );
+
+      if (!client) {
+        throw new NotFoundException("Client with the given ID does not exist");
+      }
+
+      const district_from = await this.disrtictService.findOne(
+        CreateTaxiOrderDto.from_distinct_id
+      );
+
+      if (!district_from) {
+        throw new NotFoundException("District_from with the given ID does not exist");
+      }
+
+      const district_to = await this.disrtictService.findOne(
+        CreateTaxiOrderDto.to_distinct_id
+      );
+
+      if (!district_to) {
+        throw new NotFoundException("District_to with the given ID does not exist");
+      }
 
       // Fetch districts
       const fromDistrict = await this.discritModel.findByPk(from_distinct_id);

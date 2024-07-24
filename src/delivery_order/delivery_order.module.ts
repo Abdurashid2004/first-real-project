@@ -7,11 +7,13 @@ import { Region } from "../region/model/region.model";
 import { District } from "../districts/models/district.model";
 import { Client } from "../client/model/client.entity";
 import { ClientModule } from "../client/client.module";
+import { DistrictsModule } from "../districts/districts.module";
 
 @Module({
   imports: [
     SequelizeModule.forFeature([DeliveryOrder, Region, District, Client]),
     ClientModule,
+    DistrictsModule,
   ],
   providers: [DeliveryOrderService],
   exports: [DeliveryOrderService],

@@ -19,7 +19,6 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiBody,
   ApiParam,
   ApiCookieAuth,
 } from "@nestjs/swagger";
@@ -27,6 +26,7 @@ import { UpdatePasswordAdminDto } from "./dto/updatePassword.dto";
 import { CookieGetter } from "src/decorators/cookie_getter.decorator";
 import { RegisterClientDto } from "./dto/regester-client.dto";
 import { FindUserDto } from "./dto/find-user.dto";
+import { Client } from "./model/client.entity";
 
 @ApiTags("client")
 @Controller("client")
@@ -155,5 +155,20 @@ export class ClientController {
   @ApiParam({ name: "id", required: true, description: "Client ID" })
   remove(@Param("id") id: number) {
     return this.clientService.removeClient(+id);
+  }
+
+  // Admin add Client
+  @ApiOperation({ summary: "Add Client By Admin" })
+  @ApiResponse({
+    status: 200,
+    description: "add clietn by Admin",
+    type: Client,
+  })
+  @Post()
+  create(
+    @Body() registerClientDto: RegisterClientDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return this.clientService.createClient(registerClientDto, res);
   }
 }
