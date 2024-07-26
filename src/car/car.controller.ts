@@ -36,6 +36,7 @@ export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
   @Post()
+  @UseGuards(AdminGuard)
   @UseInterceptors(FileInterceptor("photo"))
   @ApiOkResponse({ description: "Successfully created car", type: Car })
   @ApiBadRequestResponse({ description: "Invalid data provided" })
@@ -59,6 +60,7 @@ export class CarsController {
   }
 
   @Get()
+  @UseGuards(AdminGuard)
   @ApiOkResponse({ description: "Successfully retrieved cars", type: [Car] })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
   findAll() {
@@ -74,6 +76,7 @@ export class CarsController {
   }
 
   @Patch(":id")
+  @UseGuards(AdminGuard)
   @ApiOkResponse({ description: "Successfully updated car", type: Car })
   @ApiNotFoundResponse({ description: "Car not found" })
   @ApiBadRequestResponse({ description: "Invalid data provided" })
@@ -84,6 +87,7 @@ export class CarsController {
   }
 
   @Delete(":id")
+  @UseGuards(AdminGuard)
   @ApiOkResponse({ description: "Successfully deleted car" })
   @ApiNotFoundResponse({ description: "Car not found" })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })

@@ -8,15 +8,25 @@ import { District } from "../districts/models/district.model";
 import { Client } from "../client/model/client.entity";
 import { ClientModule } from "../client/client.module";
 import { DistrictsModule } from "../districts/districts.module";
+import { Driver } from "../driver/model/driver.entity";
+import { JwtModule } from "@nestjs/jwt";
+import { DriverModule } from "../driver/driver.module"; // DriverModule ni import qilish
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([DeliveryOrder, Region, District, Client]),
+    SequelizeModule.forFeature([
+      DeliveryOrder,
+      Region,
+      District,
+      Client,
+      Driver,
+    ]),
     ClientModule,
     DistrictsModule,
+    DriverModule,
   ],
   providers: [DeliveryOrderService],
-  exports: [DeliveryOrderService],
   controllers: [DeliveryOrderController],
+  exports: [DeliveryOrderService],
 })
 export class DeliveryOrderModule {}

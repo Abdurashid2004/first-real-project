@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from "@nestjs/common";
 import { DistrictsService } from "./districts.service";
 import { CreateDistrictDto } from "./dto/create-district.dto";
@@ -18,6 +19,12 @@ import {
   ApiBody,
 } from "@nestjs/swagger";
 import { District } from "./models/district.model";
+import { AdminGuard } from "src/guards/admin.guard";
+import { ClientGuard } from "src/guards/client.guard";
+import { DriverGuard } from "src/guards/driver.guard";
+import { ClientSelfGuard } from "src/guards/client.self.guard";
+import { DriverSelfGuard } from "src/guards/driver.self.guard";
+import { AdminSelfGuard } from "src/guards/admin.self.guard";
 
 @ApiTags("District")
 @Controller("districts")
@@ -25,6 +32,7 @@ export class DistrictsController {
   constructor(private readonly districtsService: DistrictsService) {}
 
   @Post()
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Create a new district" })
   @ApiBody({ type: CreateDistrictDto })
   @ApiResponse({
@@ -38,17 +46,43 @@ export class DistrictsController {
   }
 
   @Get()
+  // @UseGuards(ClientGuard)
   @ApiOperation({ summary: "Get all districts" })
   @ApiResponse({
     status: 200,
     description: "Return all districts",
     type: [District],
   })
-  findAll() {
-    return this.districtsService.findAll();
+  findAllClient() {
+    return this.districtsService.findAllClient();
+  }
+
+  @Get()
+  // @UseGuards(DriverGuard)
+  @ApiOperation({ summary: "Get all districts" })
+  @ApiResponse({
+    status: 200,
+    description: "Return all districts",
+    type: [District],
+  })
+  findAllDriver() {
+    return this.districtsService.findAllDriver();
+  }
+
+  @Get()
+  // @UseGuards(AdminGuard)
+  @ApiOperation({ summary: "Get all districts" })
+  @ApiResponse({
+    status: 200,
+    description: "Return all districts",
+    type: [District],
+  })
+  findAllAdmin() {
+    return this.districtsService.findAllAdmin();
   }
 
   @Get(":id")
+  // @UseGuards(ClientSelfGuard)
   @ApiOperation({ summary: "Get a district by ID" })
   @ApiParam({ name: "id", description: "The ID of the district" })
   @ApiResponse({
@@ -57,11 +91,40 @@ export class DistrictsController {
     type: District,
   })
   @ApiResponse({ status: 404, description: "District not found" })
-  findOne(@Param("id") id: string) {
-    return this.districtsService.findOne(+id);
+  findOneClient(@Param("id") id: number) {
+    return this.districtsService.findOneClient(id);
+  }
+
+  @Get(":id")
+  // @UseGuards(DriverSelfGuard)
+  @ApiOperation({ summary: "Get a district by ID" })
+  @ApiParam({ name: "id", description: "The ID of the district" })
+  @ApiResponse({
+    status: 200,
+    description: "Return the district with the specified ID",
+    type: District,
+  })
+  @ApiResponse({ status: 404, description: "District not found" })
+  findOneDriver(@Param("id") id: number) {
+    return this.districtsService.findOneDriver(+id);
+  }
+
+  @Get(":id")
+  // @UseGuards(AdminSelfGuard)
+  @ApiOperation({ summary: "Get a district by ID" })
+  @ApiParam({ name: "id", description: "The ID of the district" })
+  @ApiResponse({
+    status: 200,
+    description: "Return the district with the specified ID",
+    type: District,
+  })
+  @ApiResponse({ status: 404, description: "District not found" })
+  findOneAdmin(@Param("id") id: number) {
+    return this.districtsService.findOneAdmin(+id);
   }
 
   @Patch(":id")
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Update a district by ID" })
   @ApiParam({ name: "id", description: "The ID of the district" })
   @ApiBody({ type: UpdateDistrictDto })
@@ -80,6 +143,7 @@ export class DistrictsController {
   }
 
   @Delete(":id")
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Delete a district by ID" })
   @ApiParam({ name: "id", description: "The ID of the district" })
   @ApiResponse({

@@ -15,7 +15,6 @@ import * as bcrypt from "bcrypt";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { Response } from "express";
 import { SummaDto } from "./dto/summa-driver.dto";
-import { Region } from "../region/model/region.model";
 import * as otpgen from "otp-generator";
 import { TaxiOrder } from "../taxi_order/model/taxi_order.model";
 import { FindOrderDto } from "./dto/find-order.dto";

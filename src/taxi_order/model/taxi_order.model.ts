@@ -9,10 +9,20 @@ import {
 } from "sequelize-typescript";
 import { District } from "../../districts/models/district.model";
 import { Client } from "../../client/model/client.entity";
+import { Driver } from "../../driver/model/driver.entity";
 
 interface ICreateTaxiOrderAttr {
-  distance: string;
-  duration: string;
+  distance?: string;
+  duration?: string;
+  from_distinct_id: number;
+  to_distinct_id: number;
+  description: string;
+  date: string;
+  location_start: string;
+  clientId: number;
+  driverId: number;
+  count: number;
+  price: number;
 }
 
 @Table({ tableName: "taxiorder", createdAt: false, updatedAt: false })
@@ -61,6 +71,11 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
   @Column({ type: DataType.INTEGER })
   clientId: number;
 
+  @ForeignKey(() => Driver)
+  @ApiProperty({ example: 1, description: "Taxi order Id unique" })
+  @Column({ type: DataType.INTEGER })
+  driverId: number;
+
   @ApiProperty({
     example: "40.712776, -74.005974",
     description: "Starting location coordinates",
@@ -69,6 +84,24 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
     type: DataType.STRING,
   })
   location_start: string;
+
+  @ApiProperty({
+    example: "2",
+    description: "Taxi order count",
+  })
+  @Column({
+    type: DataType.INTEGER,
+  })
+  count: number;
+
+  @ApiProperty({
+    example: "5000",
+    description: "Taxi order price",
+  })
+  @Column({
+    type: DataType.DECIMAL,
+  })
+  price: number;
 
   @ApiProperty({ example: 1, description: "Taxi order distance " })
   @Column({ type: DataType.STRING })
@@ -86,4 +119,7 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
 
   @BelongsTo(() => District, { as: "toDistrict" })
   toDistrict: District;
+
+  @BelongsTo(() => Driver)
+  drivers: Driver;
 }

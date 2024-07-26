@@ -33,4 +33,12 @@ export class RegisterClientDto {
   @IsString()
   @IsNotEmpty()
   phone: string;
+
+  @ApiProperty({
+    description: "Name of the client",
+    example: "+998901234567",
+  })
+  @IsString()
+  @IsNotEmpty()
+  gender: string;
 }

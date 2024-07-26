@@ -12,13 +12,30 @@ export class DistrictsService {
     return this.districtRepo.create(createDistrictDto);
   }
 
-  findAll() {
+  findAllClient() {
     return this.districtRepo.findAll({ include: { all: true } });
   }
 
-  findOne(id: number) {
+  findAllDriver() {
+    return this.districtRepo.findAll({ include: { all: true } });
+  }
+
+  findAllAdmin() {
+    return this.districtRepo.findAll({ include: { all: true } });
+  }
+
+  findOneClient(id: number) {
     return this.districtRepo.findByPk(id);
   }
+
+  findOneDriver(id: number) {
+    return this.districtRepo.findByPk(id);
+  }
+
+  findOneAdmin(id: number) {
+    return this.districtRepo.findByPk(id);
+  }
+
 
   update(id: number, updateDistrictDto: UpdateDistrictDto) {
     return this.districtRepo.update(updateDistrictDto, {

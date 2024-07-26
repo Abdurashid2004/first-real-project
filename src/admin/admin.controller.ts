@@ -23,6 +23,7 @@ import { CreatorGuard } from "../guards/creator.guard";
 import { AdminGuard } from "../guards/admin.guard";
 import { Admin } from "./entities/admin.entity";
 import { CookieGetter } from "../decorators/cookie_getter.decorator";
+import { AdminSelfGuard } from "src/guards/admin.self.guard";
 
 @ApiTags("Admin")
 @Controller("admin")
@@ -135,7 +136,8 @@ export class AdminController {
     return this.adminService.updateAdmin(+id, updateAdminDto);
   }
 
-  // @UseGuards(CreatorGuard)
+  // @UseGuards(AdminSelfGuard)
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Delete Admin" })
   @ApiParam({ name: "id", description: "Admin ID" })
   @Delete(":id")

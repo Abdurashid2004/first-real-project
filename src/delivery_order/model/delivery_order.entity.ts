@@ -1,7 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Table, Column, Model, DataType, BelongsTo, ForeignKey } from "sequelize-typescript";
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  BelongsTo,
+  ForeignKey,
+} from "sequelize-typescript";
 import { Client } from "../../client/model/client.entity";
 import { District } from "../../districts/models/district.model";
+import { Driver } from "../../driver/model/driver.entity";
 
 interface IDeliveryOrderInterface {
   from_district_id: number;
@@ -19,6 +27,7 @@ interface IDeliveryOrderInterface {
   type: string;
   distance: string;
   duration: string;
+  driverId: number;
 }
 
 @Table({ tableName: "delivery-order" })
@@ -151,9 +160,19 @@ export class DeliveryOrder extends Model<
   })
   duration: string;
 
+  @ForeignKey(() => Driver)
+  @ApiProperty({ example: "1", description: "ID of the driver" })
+  @Column({
+    type: DataType.INTEGER,
+  })
+  driverId: number;
+
   @BelongsTo(() => Client)
   clients: Client;
 
   @BelongsTo(() => District)
   districts: District;
+
+  @BelongsTo(() => Driver)
+  drivers: Driver;
 }

@@ -12,11 +12,27 @@ export class RegionService {
     return this.regionRepo.create(createRegionDto);
   }
 
-  findAll() {
+  findAllClient() {
     return this.regionRepo.findAll({ include: { all: true } });
   }
 
-  findOne(id: number) {
+  findAllDriver() {
+    return this.regionRepo.findAll({ include: { all: true } });
+  }
+
+  findAllAdmin() {
+    return this.regionRepo.findAll({ include: { all: true } });
+  }
+
+  findOneClient(id: number) {
+    return this.regionRepo.findByPk(id);
+  }
+
+  findOneDriver(id: number) {
+    return this.regionRepo.findByPk(id);
+  }
+
+  findOneAdmin(id: number) {
     return this.regionRepo.findByPk(id);
   }
 

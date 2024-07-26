@@ -10,9 +10,9 @@ import {
 import { BalanceService } from "./balance.service";
 import { CreateBalanceDto } from "./dto/create-balance.dto";
 import { UpdateBalanceDto } from "./dto/update-balance.dto";
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger"; // Swagger kutubxonasini import qilish
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
 
-@ApiTags("balance") // Controller uchun teglarni belgilash
+@ApiTags("balance")
 @Controller("balance")
 export class BalanceController {
   constructor(private readonly balanceService: BalanceService) {}

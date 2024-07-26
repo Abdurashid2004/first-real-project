@@ -12,7 +12,7 @@ async function Start() {
   app.enableCors({
     origin: "*", // Barcha domenlarga ruxsat berish
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Ruxsat berilgan metodlar
-    allowedHeaders: "Content-Type, Accept", // Ruxsat berilgan headerlar
+    allowedHeaders: "Content-Type, Accept, Authorization", // Ruxsat berilgan headerlar
     credentials: true, // Cookie-larni yuborishga ruxsat berish
   });
 

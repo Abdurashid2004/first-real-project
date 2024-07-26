@@ -10,11 +10,12 @@ import { TaxiOrder } from "../taxi_order/model/taxi_order.model";
 import { OtpModule } from "../otp/otp.module";
 import { SmsModule } from "../sms/sms.module";
 import { Otp } from "../otp/model/otp.model";
+import { DeliveryOrder } from "../delivery_order/model/delivery_order.entity";
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Driver, Region, TaxiOrder, Otp]),
-    JwtModule,
+    SequelizeModule.forFeature([Driver, Region, TaxiOrder, Otp, DeliveryOrder]),
+    JwtModule.register({}),
     CloudinaryModule,
     OtpModule,
     SmsModule,

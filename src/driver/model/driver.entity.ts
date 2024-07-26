@@ -9,6 +9,8 @@ import {
 import { ApiProperty } from "@nestjs/swagger";
 import { Balance } from "../../balance/model/balance.entity";
 import { CarDriver } from "../../car_driver/model/car_driver.entity";
+import { DeliveryOrder } from "../../delivery_order/model/delivery_order.entity";
+import { TaxiOrder } from "src/taxi_order/model/taxi_order.model";
 
 export interface IDriverAttr {
   name: string;
@@ -133,4 +135,10 @@ export class Driver extends Model<Driver, IDriverAttr> {
 
   @HasMany(() => CarDriver)
   cars: CarDriver[];
+
+  @HasMany(() => DeliveryOrder)
+  deliveryOrders: DeliveryOrder[];
+
+  @HasMany(() => TaxiOrder)
+  taxiOrders: TaxiOrder[];
 }

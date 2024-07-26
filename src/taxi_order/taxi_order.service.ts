@@ -12,6 +12,7 @@ import { District } from "../districts/models/district.model";
 import axios from "axios";
 import { ClientService } from "../client/client.service";
 import { DistrictsService } from "../districts/districts.service";
+import { DriverService } from "../driver/driver.service";
 
 @Injectable()
 export class TaxiOrderService {
@@ -22,7 +23,8 @@ export class TaxiOrderService {
     @InjectModel(District)
     private readonly discritModel: typeof District,
     private readonly clientsevice: ClientService,
-    private readonly disrtictService: DistrictsService
+    private readonly disrtictService: DistrictsService,
+    private readonly driverService: DriverService
   ) {}
 
   private async getCoordinates(
@@ -62,20 +64,72 @@ export class TaxiOrderService {
         throw new NotFoundException("Client with the given ID does not exist");
       }
 
-      const district_from = await this.disrtictService.findOne(
+      const district_from = await this.disrtictService.findOneAdmin(
         CreateTaxiOrderDto.from_distinct_id
       );
 
       if (!district_from) {
-        throw new NotFoundException("District_from with the given ID does not exist");
+        throw new NotFoundException(
+          "District_from with the given ID does not exist"
+        );
       }
 
-      const district_to = await this.disrtictService.findOne(
+      const district_from2 = await this.disrtictService.findOneClient(
+        CreateTaxiOrderDto.from_distinct_id
+      );
+
+      if (!district_from2) {
+        throw new NotFoundException(
+          "District_from with the given ID does not exist"
+        );
+      }
+
+      const district_from3 = await this.disrtictService.findOneDriver(
+        CreateTaxiOrderDto.from_distinct_id
+      );
+
+      if (!district_from3) {
+        throw new NotFoundException(
+          "District_from with the given ID does not exist"
+        );
+      }
+
+      const district_to = await this.disrtictService.findOneAdmin(
         CreateTaxiOrderDto.to_distinct_id
       );
 
       if (!district_to) {
-        throw new NotFoundException("District_to with the given ID does not exist");
+        throw new NotFoundException(
+          "District_to with the given ID does not exist"
+        );
+      }
+
+      const district_to2 = await this.disrtictService.findOneClient(
+        CreateTaxiOrderDto.to_distinct_id
+      );
+
+      if (!district_to2) {
+        throw new NotFoundException(
+          "District_to with the given ID does not exist"
+        );
+      }
+
+      const district_to3 = await this.disrtictService.findOneDriver(
+        CreateTaxiOrderDto.to_distinct_id
+      );
+
+      if (!district_to3) {
+        throw new NotFoundException(
+          "District_to with the given ID does not exist"
+        );
+      }
+
+      const driver = await this.driverService.findOne(
+        CreateTaxiOrderDto.driverId
+      );
+
+      if (!driver) {
+        throw new NotFoundException("Driver with the given ID does not exist");
       }
 
       // Fetch districts

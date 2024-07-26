@@ -6,6 +6,7 @@ import { TaxiOrder } from "../../taxi_order/model/taxi_order.model";
 interface IClientAttr {
   name: string;
   phone: string;
+  gender: string;
   hashed_password: string;
   is_active: boolean;
 }
@@ -40,6 +41,15 @@ export class Client extends Model<Client, IClientAttr> {
     type: DataType.STRING,
   })
   name: string;
+
+  @ApiProperty({
+    example: "male",
+    description: "The gender of the client",
+  })
+  @Column({
+    type: DataType.STRING,
+  })
+  gender: string;
 
   @ApiProperty({
     example: "hashed_password",

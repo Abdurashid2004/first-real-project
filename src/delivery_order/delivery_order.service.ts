@@ -13,6 +13,7 @@ import { Region } from "../region/model/region.model";
 import { District } from "../districts/models/district.model";
 import { ClientService } from "../client/client.service";
 import { DistrictsService } from "../districts/districts.service";
+import { DriverService } from "src/driver/driver.service";
 
 @Injectable()
 export class DeliveryOrderService {
@@ -24,7 +25,8 @@ export class DeliveryOrderService {
     @InjectModel(District)
     private readonly discritModel: typeof District,
     private readonly clientsevice: ClientService,
-    private districtService: DistrictsService
+    private districtService: DistrictsService,
+    private driverService: DriverService
   ) {}
 
   private async getCoordinates(
@@ -66,7 +68,7 @@ export class DeliveryOrderService {
         throw new NotFoundException("Client with the given ID does not exist");
       }
 
-      const district_from = await this.districtService.findOne(
+      const district_from = await this.districtService.findOneAdmin(
         createDeliveryOrderDto.from_district_id
       );
 
@@ -76,7 +78,27 @@ export class DeliveryOrderService {
         );
       }
 
-      const district_to = await this.districtService.findOne(
+      const district_from2 = await this.districtService.findOneClient(
+        createDeliveryOrderDto.from_district_id
+      );
+
+      if (!district_from2) {
+        throw new NotFoundException(
+          "District_from with the given ID does not exist"
+        );
+      }
+
+      const district_from3 = await this.districtService.findOneDriver(
+        createDeliveryOrderDto.from_district_id
+      );
+
+      if (!district_from3) {
+        throw new NotFoundException(
+          "District_from with the given ID does not exist"
+        );
+      }
+
+      const district_to = await this.districtService.findOneAdmin(
         createDeliveryOrderDto.to_district_id
       );
 
@@ -84,6 +106,34 @@ export class DeliveryOrderService {
         throw new NotFoundException(
           "District_to with the given ID does not exist"
         );
+      }
+
+      const district_to2 = await this.districtService.findOneClient(
+        createDeliveryOrderDto.to_district_id
+      );
+
+      if (!district_to2) {
+        throw new NotFoundException(
+          "District_to with the given ID does not exist"
+        );
+      }
+
+      const district_to3 = await this.districtService.findOneDriver(
+        createDeliveryOrderDto.to_district_id
+      );
+
+      if (!district_to3) {
+        throw new NotFoundException(
+          "District_to with the given ID does not exist"
+        );
+      }
+
+      const driver = await this.driverService.findOne(
+        createDeliveryOrderDto.driverId
+      );
+
+      if (!driver) {
+        throw new NotFoundException("Driver with the given ID does not exist");
       }
 
       const toDiscrit = await this.discritModel.findByPk(to_district_id);
@@ -118,11 +168,9 @@ export class DeliveryOrderService {
         duration,
         ...createDeliveryOrderDto,
       });
-
-      // Soddalashtirilgan javobni qaytaring
       return { distance, duration };
     } catch (error) {
-      console.error(error); // Log the error for debugging purposes
+      console.error(error);
       throw new InternalServerErrorException("Failed to create delivery order");
     }
   }

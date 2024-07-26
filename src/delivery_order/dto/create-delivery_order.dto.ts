@@ -86,4 +86,12 @@ export class CreateDeliveryOrderDto {
   @IsString()
   @IsNotEmpty()
   type: string;
+
+  @ApiProperty({
+    example: "1",
+    description: "ID of the driver",
+    required: true,
+  })
+  @IsNotEmpty()
+  driverId: number;
 }
