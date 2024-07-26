@@ -38,7 +38,7 @@ export class RegisterClientDto {
     description: "Name of the client",
     example: "+998901234567",
   })
-  @IsString()
+  @IsString() 
   @IsNotEmpty()
   gender: string;
 }
