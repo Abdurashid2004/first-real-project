@@ -33,7 +33,7 @@ import { Client } from "./model/client.entity";
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  @Post("newotp")
+  @Post("newsotp")
   @ApiOperation({ summary: "Generate a new OTP" })
   @ApiResponse({ status: 201, description: "OTP generated successfully." })
   @ApiResponse({ status: 400, description: "Bad request." })
