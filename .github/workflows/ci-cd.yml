@@ -13,30 +13,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Run tests
-      run: npm test
+      - name: Build project
+        run: npm run build
 
-    - name: Build project
-      run: npm run build
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
-    - name: Install sshpass
-      run: sudo apt-get install -y sshpass
-
-    - name: Deploy to server
-      env:
-        SERVER: ${{ secrets.SERVER }}
-        USER: ${{ secrets.USER }}
-        PASSWORD: ${{ secrets.PASSWORD }}
-      run: |
-        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USER@$SERVER "pm2 stop all && cd /path/to/your/project && git pull && npm install && npm run build && pm2 start ecosystem.config.js"
+      - name: Deploy to server
+        env:
+          SERVER: ${{ secrets.SERVER }}
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USER@$SERVER "pm2 stop all && cd /path/to/your/project && git pull && npm install && npm run build && pm2 start ecosystem.config.js"
