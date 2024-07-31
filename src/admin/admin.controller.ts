@@ -30,7 +30,7 @@ import { AdminSelfGuard } from "src/guards/admin.self.guard";
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @UseGuards(CreatorGuard)
+  // @UseGuards(CreatorGuard)
   @ApiOperation({ summary: "Add Admin" })
   @ApiResponse({
     status: 200,
