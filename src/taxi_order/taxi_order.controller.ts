@@ -12,7 +12,7 @@ import { TaxiOrderService } from "./taxi_order.service";
 import { CreateTaxiOrderDto } from "./dto/create-taxi_order.dto";
 import { UpdateTaxiOrderDto } from "./dto/update-taxi_order.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { AdminGuard } from "../guards/admin.guard";
+// import { AdminGuard } from "../guards/admin.guard";
 
 @ApiTags("TaxiOrder")
 @Controller("taxi-order")
@@ -20,7 +20,7 @@ export class TaxiOrderController {
   constructor(private readonly taxiOrderService: TaxiOrderService) {}
 
   @Post()
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Create taxi order" })
   @ApiResponse({
     status: 201,
@@ -61,7 +61,7 @@ export class TaxiOrderController {
   }
 
   @Delete(":id")
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Delete taxi order by ID" })
   @ApiResponse({
     status: 200,

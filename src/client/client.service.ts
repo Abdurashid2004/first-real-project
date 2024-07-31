@@ -24,7 +24,7 @@ import { RegisterClientDto } from "./dto/regester-client.dto";
 import { UpdatePasswordAdminDto } from "./dto/updatePassword.dto";
 import { FindUserDto } from "./dto/find-user.dto";
 import { Op } from "sequelize";
-
+import { log } from "console";
 
 @Injectable()
 export class ClientService {
@@ -95,6 +95,7 @@ export class ClientService {
     });
 
     await this.clientRepo.create({ phone });
+    console.log(otp);
 
     return { status: "Success", message, otp };
   }
@@ -142,7 +143,7 @@ export class ClientService {
   }
 
   async register(askInfo: RegisterClientDto, res: Response) {
-    const { name, password, phone } = askInfo;
+    const { name, password, phone, gender } = askInfo;
 
     try {
       if (askInfo.password !== askInfo.confirm_password) {
@@ -167,6 +168,7 @@ export class ClientService {
             hashed_password: hashedPassword,
             hashed_refresh_token: hashedRefreshToken,
             is_active: true,
+            gender: gender
           },
           {
             where: {
