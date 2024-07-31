@@ -163,12 +163,12 @@ export class DeliveryOrderService {
       const distance = response.data.rows[0].elements[0].distance.text;
       const duration = response.data.rows[0].elements[0].duration.text;
 
-      await this.deliveryOrderModel.create({
+      const res = await this.deliveryOrderModel.create({
         distance,
         duration,
         ...createDeliveryOrderDto,
       });
-      return { distance, duration };
+      return res;
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException("Failed to create delivery order");
