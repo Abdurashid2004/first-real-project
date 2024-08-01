@@ -23,6 +23,7 @@ interface ICreateTaxiOrderAttr {
   driverId: number;
   count: number;
   price: number;
+  status: string;
 }
 
 @Table({ tableName: "taxiorder", createdAt: false, updatedAt: false })
@@ -55,6 +56,15 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
     type: DataType.STRING,
   })
   date: string;
+
+  @ApiProperty({
+    example: "2024-07-13T12:34:56Z",
+    description: "Date and time of the taxi order",
+  })
+  @Column({
+    type: DataType.STRING,
+  })
+  status: string;
 
   @ForeignKey(() => District)
   @ApiProperty({ example: 1, description: "Taxi order Id unique" })
@@ -111,15 +121,18 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
   @Column({ type: DataType.STRING })
   duration: string;
 
-  @BelongsTo(() => Client)
-  clients: Client;
+  @BelongsTo(() => District, {
+    as: "fromDistrict",
+    foreignKey: "from_distinct_id",
+  })
+  fromDistrict: District;
 
-  @BelongsTo(() => District, { as: "fromDistrict" })
-  fromdistrict: District;
-
-  @BelongsTo(() => District, { as: "toDistrict" })
+  @BelongsTo(() => District, { as: "toDistrict", foreignKey: "to_distinct_id" })
   toDistrict: District;
 
-  @BelongsTo(() => Driver)
-  drivers: Driver;
+  @BelongsTo(() => Client, { as: "client", foreignKey: "clientId" })
+  client: Client;
+
+  @BelongsTo(() => Driver, { as: "driver", foreignKey: "driverId" })
+  driver: Driver;
 }

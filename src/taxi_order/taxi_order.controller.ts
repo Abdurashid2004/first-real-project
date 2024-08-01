@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  NotFoundException,
 } from "@nestjs/common";
 import { TaxiOrderService } from "./taxi_order.service";
 import { CreateTaxiOrderDto } from "./dto/create-taxi_order.dto";
 import { UpdateTaxiOrderDto } from "./dto/update-taxi_order.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { UpdateStatusDto } from "./dto/update-status.dto";
 // import { AdminGuard } from "../guards/admin.guard";
 
 @ApiTags("TaxiOrder")
@@ -70,5 +72,24 @@ export class TaxiOrderController {
   @ApiResponse({ status: 404, description: "Taxi order not found." })
   remove(@Param("id") id: number) {
     return this.taxiOrderService.remove(id);
+  }
+
+  @Patch(":order/status")
+  async updateStatus(
+    @Param("orderId") orderId: number,
+    @Body() updateStatusDto: UpdateStatusDto
+  ) {
+    try {
+      const updatedOrder = await this.taxiOrderService.updateStatus(
+        orderId,
+        updateStatusDto
+      );
+      return updatedOrder;                                                                          
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error("An error occurred while updating the order status");
+    }
   }
 }

@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from "@nestjs/common";
 import { DeliveryOrderService } from "./delivery_order.service";
 import { CreateDeliveryOrderDto } from "./dto/create-delivery_order.dto";
 import { UpdateDeliveryOrderDto } from "./dto/update-delivery_order.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { UpdateStatusDto } from "./dto/update-status.dto";
 
 @ApiTags("Delivery-Order")
 @Controller("delivery-order")
@@ -66,5 +68,24 @@ export class DeliveryOrderController {
   @ApiResponse({ status: 404, description: "Delivery order not found." })
   remove(@Param("id") id: string) {
     return this.deliveryOrderService.remove(+id);
+  }
+
+  @Patch(":order/status")
+  async updateStatus(
+    @Param("orderId") orderId: number,
+    @Body() updateStatusDto: UpdateStatusDto
+  ) {
+    try {
+      const updatedOrder = await this.deliveryOrderService.updateStatus(
+        orderId,
+        updateStatusDto
+      );
+      return updatedOrder;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error("An error occurred while updating the order status");
+    }
   }
 }

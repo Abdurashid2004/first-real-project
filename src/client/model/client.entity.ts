@@ -83,6 +83,6 @@ export class Client extends Model<Client, IClientAttr> {
   @HasMany(() => DeliveryOrder)
   deliveryOrders: DeliveryOrder[];
 
-  @HasMany(() => TaxiOrder)
+  @HasMany(() => TaxiOrder, { foreignKey: "clientId" })
   taxiOrders: TaxiOrder[];
 }

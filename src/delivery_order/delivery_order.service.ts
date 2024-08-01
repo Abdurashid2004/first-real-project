@@ -14,6 +14,7 @@ import { District } from "../districts/models/district.model";
 import { ClientService } from "../client/client.service";
 import { DistrictsService } from "../districts/districts.service";
 import { DriverService } from "src/driver/driver.service";
+import { UpdateStatusDto } from "./dto/update-status.dto";
 
 @Injectable()
 export class DeliveryOrderService {
@@ -201,5 +202,26 @@ export class DeliveryOrderService {
   async remove(id: number): Promise<void> {
     const deliveryOrder = await this.findOne(id);
     await deliveryOrder.destroy();
+  }
+
+  async updateStatus(orderId: number, updateOrderStatusDto: UpdateStatusDto) {
+    const [affectedCount] = await this.deliveryOrderModel.update(
+      { status: updateOrderStatusDto.status },
+      { where: { id: orderId } }
+    );
+
+    if (affectedCount === 0) {
+      throw new NotFoundException("Order not found or status not updated");
+    }
+
+    const updatedOrder = await this.deliveryOrderModel.findOne({
+      where: { id: orderId },
+    });
+
+    if (!updatedOrder) {
+      throw new NotFoundException("Order not found");
+    }
+
+    return updatedOrder;
   }
 }

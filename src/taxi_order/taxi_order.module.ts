@@ -13,7 +13,7 @@ import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([TaxiOrder, Region, District, Driver]),
+    SequelizeModule.forFeature([TaxiOrder, Region, District, Driver,]),
     JwtModule.register({}),
     ClientModule,
     DistrictsModule,

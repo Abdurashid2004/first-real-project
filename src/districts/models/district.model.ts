@@ -43,8 +43,11 @@ export class District extends Model<District, ICreateDistrictAttr> {
   @BelongsTo(() => Region)
   regions: Region;
 
-  @HasMany(() => TaxiOrder)
-  taxiOrders: TaxiOrder;
+  @HasMany(() => TaxiOrder, { foreignKey: "from_distinct_id" })
+  fromTaxiOrders: TaxiOrder[];
+
+  @HasMany(() => TaxiOrder, { foreignKey: "to_distinct_id" })
+  toTaxiOrders: TaxiOrder[];
 
   @HasMany(() => DeliveryOrder)
   deliveryOrders: DeliveryOrder;

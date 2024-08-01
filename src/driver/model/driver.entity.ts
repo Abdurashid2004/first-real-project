@@ -139,6 +139,6 @@ export class Driver extends Model<Driver, IDriverAttr> {
   @HasMany(() => DeliveryOrder)
   deliveryOrders: DeliveryOrder[];
 
-  @HasMany(() => TaxiOrder)
+  @HasMany(() => TaxiOrder, { foreignKey: "driverId" })
   taxiOrders: TaxiOrder[];
 }

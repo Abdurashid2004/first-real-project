@@ -25,15 +25,15 @@ export class DistrictsService {
   }
 
   findOneClient(id: number) {
-    return this.districtRepo.findByPk(id);
+    return this.districtRepo.findByPk(id, { include: { all: true } });
   }
 
   findOneDriver(id: number) {
-    return this.districtRepo.findByPk(id);
+    return this.districtRepo.findByPk(id, { include: { all: true } });
   }
 
   findOneAdmin(id: number) {
-    return this.districtRepo.findByPk(id);
+    return this.districtRepo.findByPk(id, { include: { all: true } });
   }
 
 

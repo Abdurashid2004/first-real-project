@@ -132,6 +132,16 @@ export class DeliveryOrder extends Model<
   recipient_phone: string;
 
   @ApiProperty({
+    description: "Taksi buyurtmasining hozirgi holati",
+    example: "In Progress",
+  })
+  @Column({
+    type: DataType.STRING,
+    // allowNull: false,
+  })
+  status: string;
+
+  @ApiProperty({
     example: "123 Main St",
     description: "Starting location of the delivery",
   })
