@@ -13,7 +13,6 @@ import axios from "axios";
 import { ClientService } from "../client/client.service";
 import { DistrictsService } from "../districts/districts.service";
 import { DriverService } from "../driver/driver.service";
-import { UpdateStatusDto } from "./dto/update-status.dto";
 import { Client } from "src/client/model/client.entity";
 import { Driver } from "src/driver/model/driver.entity";
 
@@ -26,8 +25,8 @@ export class TaxiOrderService {
     @InjectModel(District)
     private readonly districtModel: typeof District,
     private readonly clientService: ClientService,
-    private readonly districtService: DistrictsService,
-    private readonly driverService: DriverService
+    private readonly driverService: DriverService,
+    private readonly districtService: DistrictsService
   ) {}
 
   private async getCoordinates(
@@ -77,6 +76,8 @@ export class TaxiOrderService {
 
       const distance = response.data.rows[0].elements[0].distance.text;
       const duration = response.data.rows[0].elements[0].duration.text;
+      console.log(distance, duration, "salom");
+      
 
       return { distance, duration };
     } catch (error) {
@@ -90,8 +91,15 @@ export class TaxiOrderService {
       const { from_distinct_id, to_distinct_id, clientId, driverId } =
         createTaxiOrderDto;
 
-      const client = await this.findOne(clientId);
-      const driver = await this.findOne(driverId);
+      const client = await this.clientService.findOneClient(clientId);
+      if (!client) {
+        throw new NotFoundException("Client with the given ID does not exist");
+      }
+
+      const driver = await this.driverService.findOne(driverId);
+      if (!driver) {
+        throw new NotFoundException("Driver with the given ID does not exist");
+      }
 
       const districtFrom =
         await this.districtService.findOneAdmin(from_distinct_id);
@@ -112,10 +120,17 @@ export class TaxiOrderService {
       const fromRegion = await this.regionModel.findByPk(
         districtFrom.region_id
       );
-      const toRegion = await this.regionModel.findByPk(districtTo.region_id);
+      if (!fromRegion) {
+        throw new NotFoundException(
+          "Region for the given District_from ID does not exist"
+        );
+      }
 
-      if (!fromRegion || !toRegion) {
-        throw new Error("Regions not found for the provided district IDs.");
+      const toRegion = await this.regionModel.findByPk(districtTo.region_id);
+      if (!toRegion) {
+        throw new NotFoundException(
+          "Region for the given District_to ID does not exist"
+        );
       }
 
       const fromCoordinates = await this.getCoordinates(fromRegion.name);
@@ -126,11 +141,13 @@ export class TaxiOrderService {
         toCoordinates
       );
 
+
       const taxiOrder = await this.taxiOrderRepo.create({
         distance,
         duration,
         ...createTaxiOrderDto,
       });
+  
 
       return taxiOrder;
     } catch (error) {
@@ -161,35 +178,23 @@ export class TaxiOrderService {
     });
   }
 
-  update(id: number, updateTaxiOrderDto: UpdateTaxiOrderDto) {
-    return this.taxiOrderRepo.update(updateTaxiOrderDto, {
-      where: { id },
-      returning: true,
-    });
-  }
-
-  remove(id: number) {
-    return this.taxiOrderRepo.destroy({ where: { id } });
-  }
-
-  async updateStatus(orderId: number, updateOrderStatusDto: UpdateStatusDto) {
-    const [affectedCount] = await this.taxiOrderRepo.update(
-      { status: updateOrderStatusDto.status },
-      { where: { id: orderId } }
+  async update(id: number, updateTaxiOrderDto: UpdateTaxiOrderDto) {
+    const [affectedCount, [updatedOrder]] = await this.taxiOrderRepo.update(
+      { status: updateTaxiOrderDto.status },
+      {
+        where: { id },
+        returning: true,
+      }
     );
 
     if (affectedCount === 0) {
       throw new NotFoundException("Order not found or status not updated");
     }
 
-    const updatedOrder = await this.taxiOrderRepo.findOne({
-      where: { id: orderId },
-    });
-
-    if (!updatedOrder) {
-      throw new NotFoundException("Order not found");
-    }
-
     return updatedOrder;
+  }
+
+  remove(id: number) {
+    return this.taxiOrderRepo.destroy({ where: { id } });
   }
 }

@@ -28,6 +28,7 @@ interface IDeliveryOrderInterface {
   distance: string;
   duration: string;
   driverId: number;
+  status: string;
 }
 
 @Table({ tableName: "delivery-order" })

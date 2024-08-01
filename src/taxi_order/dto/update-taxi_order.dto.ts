@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateTaxiOrderDto } from './create-taxi_order.dto';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
 
-export class UpdateTaxiOrderDto extends PartialType(CreateTaxiOrderDto) {}
+export class UpdateTaxiOrderDto {
+  @ApiProperty({
+    description: "Taksi buyurtmasining hozirgi holati",
+    example: "In Progress",
+  })
+  @IsString()
+  @IsNotEmpty()
+  status: string;
+}

@@ -12,7 +12,7 @@ import { DeliveryOrderService } from "./delivery_order.service";
 import { CreateDeliveryOrderDto } from "./dto/create-delivery_order.dto";
 import { UpdateDeliveryOrderDto } from "./dto/update-delivery_order.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { UpdateStatusDto } from "./dto/update-status.dto";
+
 
 @ApiTags("Delivery-Order")
 @Controller("delivery-order")
@@ -46,17 +46,17 @@ export class DeliveryOrderController {
   }
 
   @Patch(":id")
-  @ApiOperation({ summary: "Update delivery order" })
+  @ApiOperation({ summary: "Update taxi order by ID" })
   @ApiResponse({
     status: 200,
-    description: "The delivery order has been successfully updated.",
+    description: "The taxi order has been successfully updated.",
   })
-  @ApiResponse({ status: 404, description: "Delivery order not found." })
+  @ApiResponse({ status: 404, description: "Taxi order not found." })
   update(
-    @Param("id") id: string,
+    @Param("id") id: number,
     @Body() updateDeliveryOrderDto: UpdateDeliveryOrderDto
   ) {
-    return this.deliveryOrderService.update(+id, updateDeliveryOrderDto);
+    return this.deliveryOrderService.update(id, updateDeliveryOrderDto);
   }
 
   @Delete(":id")
@@ -68,24 +68,5 @@ export class DeliveryOrderController {
   @ApiResponse({ status: 404, description: "Delivery order not found." })
   remove(@Param("id") id: string) {
     return this.deliveryOrderService.remove(+id);
-  }
-
-  @Patch(":order/status")
-  async updateStatus(
-    @Param("orderId") orderId: number,
-    @Body() updateStatusDto: UpdateStatusDto
-  ) {
-    try {
-      const updatedOrder = await this.deliveryOrderService.updateStatus(
-        orderId,
-        updateStatusDto
-      );
-      return updatedOrder;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new Error("An error occurred while updating the order status");
-    }
   }
 }

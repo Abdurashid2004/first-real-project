@@ -72,4 +72,12 @@ export class CreateTaxiOrderDto {
   @IsNumber()
   @IsNotEmpty()
   price: number;
+
+  @ApiProperty({
+    description: "Taksi buyurtmasining hozirgi holati",
+    example: "In Progress",
+  })
+  @IsString()
+  @IsNotEmpty()
+  status: string;
 }

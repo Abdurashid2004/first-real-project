@@ -14,7 +14,7 @@ import { District } from "../districts/models/district.model";
 import { ClientService } from "../client/client.service";
 import { DistrictsService } from "../districts/districts.service";
 import { DriverService } from "src/driver/driver.service";
-import { UpdateStatusDto } from "./dto/update-status.dto";
+import { CreateTaxiOrderDto } from "src/taxi_order/dto/create-taxi_order.dto";
 
 @Injectable()
 export class DeliveryOrderService {
@@ -190,38 +190,25 @@ export class DeliveryOrderService {
     return deliveryOrder;
   }
 
-  async update(
-    id: number,
-    updateDeliveryOrderDto: UpdateDeliveryOrderDto
-  ): Promise<DeliveryOrder> {
-    const deliveryOrder = await this.findOne(id);
-    await deliveryOrder.update(updateDeliveryOrderDto);
-    return deliveryOrder;
-  }
-
-  async remove(id: number): Promise<void> {
-    const deliveryOrder = await this.findOne(id);
-    await deliveryOrder.destroy();
-  }
-
-  async updateStatus(orderId: number, updateOrderStatusDto: UpdateStatusDto) {
-    const [affectedCount] = await this.deliveryOrderModel.update(
-      { status: updateOrderStatusDto.status },
-      { where: { id: orderId } }
-    );
+  async update(id: number, updateDeliveryOrderDto: UpdateDeliveryOrderDto) {
+    const [affectedCount, [updatedOrder]] =
+      await this.deliveryOrderModel.update(
+        { status: updateDeliveryOrderDto.status },
+        {
+          where: { id },
+          returning: true,
+        }
+      );
 
     if (affectedCount === 0) {
       throw new NotFoundException("Order not found or status not updated");
     }
 
-    const updatedOrder = await this.deliveryOrderModel.findOne({
-      where: { id: orderId },
-    });
-
-    if (!updatedOrder) {
-      throw new NotFoundException("Order not found");
-    }
-
     return updatedOrder;
+  }
+
+  async remove(id: number): Promise<void> {
+    const deliveryOrder = await this.findOne(id);
+    await deliveryOrder.destroy();
   }
 }

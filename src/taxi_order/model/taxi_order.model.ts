@@ -58,8 +58,8 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
   date: string;
 
   @ApiProperty({
-    example: "2024-07-13T12:34:56Z",
-    description: "Date and time of the taxi order",
+    description: "Taksi buyurtmasining hozirgi holati",
+    example: "In Progress",
   })
   @Column({
     type: DataType.STRING,
