@@ -121,14 +121,14 @@ export class AdminController {
     description: "FindOne admin",
     type: Admin,
   })
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   @ApiParam({ name: "id", description: "Admin ID" })
   @Get(":id")
   findOne(@Param("id") id: number) {
     return this.adminService.findOneAdmin(+id);
   }
 
-  @UseGuards(CreatorGuard)
+  // @UseGuards(CreatorGuard)
   @ApiOperation({ summary: "Update Admin" })
   @ApiParam({ name: "id", description: "Admin ID" })
   @Patch(":id")
