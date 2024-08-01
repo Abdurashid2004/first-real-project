@@ -77,7 +77,6 @@ export class TaxiOrderService {
       const distance = response.data.rows[0].elements[0].distance.text;
       const duration = response.data.rows[0].elements[0].duration.text;
       console.log(distance, duration, "salom");
-      
 
       return { distance, duration };
     } catch (error) {
@@ -141,13 +140,11 @@ export class TaxiOrderService {
         toCoordinates
       );
 
-
       const taxiOrder = await this.taxiOrderRepo.create({
         distance,
         duration,
         ...createTaxiOrderDto,
       });
-  
 
       return taxiOrder;
     } catch (error) {
