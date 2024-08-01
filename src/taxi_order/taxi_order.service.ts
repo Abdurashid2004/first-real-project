@@ -111,9 +111,7 @@ export class TaxiOrderService {
       const districtTo =
         await this.districtService.findOneAdmin(to_distinct_id);
       if (!districtTo) {
-        throw new NotFoundException(
-          "District_to with the given ID does not exist"
-        );
+        throw new NotFoundException("District_to with given ID does not exist");
       }
 
       const fromRegion = await this.regionModel.findByPk(
@@ -178,10 +176,7 @@ export class TaxiOrderService {
   async update(id: number, updateTaxiOrderDto: UpdateTaxiOrderDto) {
     const [affectedCount, [updatedOrder]] = await this.taxiOrderRepo.update(
       { status: updateTaxiOrderDto.status },
-      {
-        where: { id },
-        returning: true,
-      }
+      { where: { id }, returning: true }
     );
 
     if (affectedCount === 0) {
