@@ -21,7 +21,6 @@ export class TaxiOrderController {
   constructor(private readonly taxiOrderService: TaxiOrderService) {}
 
   @Post()
-  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Create taxi order" })
   @ApiResponse({
     status: 201,
@@ -62,7 +61,6 @@ export class TaxiOrderController {
   }
 
   @Delete(":id")
-  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: "Delete taxi order by ID" })
   @ApiResponse({
     status: 200,
