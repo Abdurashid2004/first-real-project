@@ -142,6 +142,8 @@ export class ClientService {
     }
   }
 
+  // register
+  
   async register(askInfo: RegisterClientDto, res: Response) {
     const { name, password, phone, gender } = askInfo;
 
@@ -168,7 +170,7 @@ export class ClientService {
             hashed_password: hashedPassword,
             hashed_refresh_token: hashedRefreshToken,
             is_active: true,
-            gender: gender
+            gender: gender,
           },
           {
             where: {
