@@ -142,10 +142,10 @@ export class TaxiOrderService {
   async findAll() {
     return this.taxiOrderRepo.findAll({
       include: [
-        { model: District, as: "fromDistrict", attributes: ["id", "name"] },
-        { model: District, as: "toDistrict", attributes: ["id", "name"] },
-        { model: Client, as: "client", attributes: ["id", "name"] },
-        { model: Driver, as: "driver", attributes: ["id", "name"] },
+        { model: this.districtModel, as: "fromDistrict" },
+        { model: this.districtModel, as: "toDistrict" },
+        { model: Client, as: "client" },
+        { model: Driver, as: "driver" },
       ],
     });
   }
@@ -153,10 +153,10 @@ export class TaxiOrderService {
   findOne(id: number) {
     return this.taxiOrderRepo.findByPk(id, {
       include: [
-        { model: District, as: "fromDistrict", attributes: ["id", "name"] },
-        { model: District, as: "toDistrict", attributes: ["id", "name"] },
-        { model: Client, as: "client", attributes: ["id", "name"] },
-        { model: Driver, as: "driver", attributes: ["id", "name"] },
+        { model: District, as: "fromDistrict" },
+        { model: District, as: "toDistrict" },
+        { model: Client, as: "client" },
+        { model: Driver, as: "driver" },
       ],
     });
   }
