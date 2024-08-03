@@ -397,7 +397,7 @@ export class DriverService {
       res.clearCookie("refresh_token");
 
       const response = {
-        message: "User logged out successfully",
+        message: "Driver logged out successfully",
         user_refresh_token: updatedUser.hashed_refresh_token,
       };
 
@@ -497,7 +497,7 @@ export class DriverService {
     }
   }
 
-  // Admin add client
+  // Admin add driver
 
   async createDriver(
     registerDriverDto: RegisterDriverDto,
