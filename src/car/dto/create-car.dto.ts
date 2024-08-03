@@ -2,12 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
 export class CreateCarDto {
-  @ApiProperty({
-    type: String,
-    format: "binary",
-  })
-  photo: any;
-
   @ApiProperty({ example: "ABC123", description: "The car number" })
   @IsString()
   car_number: string;
@@ -33,4 +27,10 @@ export class CreateCarDto {
   })
   @IsString()
   tex_passport: string;
+
+  @ApiProperty({
+    example: "1",
+    description: "The technical passport of the car",
+  })
+  driverId: number;
 }

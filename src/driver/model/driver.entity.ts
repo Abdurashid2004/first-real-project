@@ -5,12 +5,14 @@ import {
   DataType,
   HasOne,
   HasMany,
+  BelongsToMany,
 } from "sequelize-typescript";
 import { ApiProperty } from "@nestjs/swagger";
 import { Balance } from "../../balance/model/balance.entity";
-import { CarDriver } from "../../car_driver/model/car_driver.entity";
 import { DeliveryOrder } from "../../delivery_order/model/delivery_order.entity";
-import { TaxiOrder } from "src/taxi_order/model/taxi_order.model";
+import { TaxiOrder } from "../../taxi_order/model/taxi_order.model";
+import { Car } from "../../car/model/car.entity";
+import { CarDriver } from "../../car_driver/model/car_driver.entity";
 
 export interface IDriverAttr {
   name: string;
@@ -41,21 +43,18 @@ export class Driver extends Model<Driver, IDriverAttr> {
   @ApiProperty({ example: "John", description: "The first name of the driver" })
   @Column({
     type: DataType.STRING,
-    // allowNull: false,
   })
   name: string;
 
   @ApiProperty({ example: "Doe", description: "The last name of the driver" })
   @Column({
     type: DataType.STRING,
-    // allowNull: false,
   })
   surname: string;
 
   @ApiProperty({ example: 30, description: "The age of the driver" })
   @Column({
     type: DataType.INTEGER,
-    // allowNull: false,
   })
   age: number;
 
@@ -65,7 +64,6 @@ export class Driver extends Model<Driver, IDriverAttr> {
   })
   @Column({
     type: DataType.STRING,
-    // allowNull: false,
   })
   phone: string;
 
@@ -81,7 +79,6 @@ export class Driver extends Model<Driver, IDriverAttr> {
   })
   @Column({
     type: DataType.STRING,
-    // allowNull: false,
   })
   passport: string;
 
@@ -100,7 +97,6 @@ export class Driver extends Model<Driver, IDriverAttr> {
   })
   @Column({
     type: DataType.DECIMAL(10, 2),
-    // allowNull: false,
     defaultValue: 0,
   })
   total_balance: number;
@@ -111,7 +107,6 @@ export class Driver extends Model<Driver, IDriverAttr> {
   })
   @Column({
     type: DataType.BOOLEAN,
-    // allowNull: false,
     defaultValue: false,
   })
   isActive: boolean;
@@ -133,8 +128,8 @@ export class Driver extends Model<Driver, IDriverAttr> {
   @HasOne(() => Balance)
   balance: Balance;
 
-  @HasMany(() => CarDriver)
-  cars: CarDriver[];
+  @BelongsToMany(() => Car, () => CarDriver)
+  cars: Car[];
 
   @HasMany(() => DeliveryOrder)
   deliveryOrders: DeliveryOrder[];

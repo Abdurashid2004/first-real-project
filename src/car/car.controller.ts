@@ -37,18 +37,13 @@ export class CarsController {
 
   @Post()
   // @UseGuards(AdminGuard)
-  @UseInterceptors(FileInterceptor("photo"))
   @ApiOkResponse({ description: "Successfully created car", type: Car })
   @ApiBadRequestResponse({ description: "Invalid data provided" })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
-  @ApiConsumes("multipart/form-data")
   @ApiBody({ type: CreateCarDto })
-  async create(
-    @Body() createCarDto: CreateCarDto,
-    @UploadedFile() photo?: Express.Multer.File
-  ) {
+  async create(@Body() createCarDto: CreateCarDto) {
     try {
-      const result = await this.carsService.create(createCarDto, photo);
+      const result = await this.carsService.create(createCarDto);
       return result;
     } catch (error) {
       if (error.response?.status === 400) {
@@ -63,8 +58,9 @@ export class CarsController {
   // @UseGuards(AdminGuard)
   @ApiOkResponse({ description: "Successfully retrieved cars", type: [Car] })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
-  findAll() {
-    return this.carsService.findAll();
+  @Get()
+  async findAll(): Promise<Car[]> {
+    return await this.carsService.findAll();
   }
 
   @Get(":id")

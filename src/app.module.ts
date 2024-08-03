@@ -12,8 +12,8 @@ import { TaxiOrderModule } from "./taxi_order/taxi_order.module";
 import { DeliveryOrderModule } from "./delivery_order/delivery_order.module";
 import { BalanceModule } from "./balance/balance.module";
 import { DriverModule } from "./driver/driver.module";
-import { CarDriverModule } from "./car_driver/car_driver.module";
 import { CarModule } from "./car/car.module";
+import { CarDriverModule } from "./car_driver/car_driver.module";
 
 @Module({
   imports: [
@@ -50,9 +50,9 @@ import { CarModule } from "./car/car.module";
 
     DriverModule,
 
-    CarDriverModule,
-
     CarModule,
+    
+    CarDriverModule,
 
     OtpModule,
 

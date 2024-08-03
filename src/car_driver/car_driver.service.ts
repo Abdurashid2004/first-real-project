@@ -33,7 +33,7 @@ export class CarDriverService {
   }
 
   async findAll(): Promise<CarDriver[]> {
-    return await this.carDriverRepo.findAll();
+    return await this.carDriverRepo.findAll({ include: { all: true } });
   }
 
   async findOne(id: number): Promise<CarDriver> {

@@ -5,10 +5,11 @@ import { JwtModule } from "@nestjs/jwt";
 import { CarsController } from "./car.controller";
 import { CarsService } from "./car.service";
 import { CloudinaryModule } from "src/cloudinary/cloudinary.module";
+import { Driver } from "../driver/model/driver.entity";
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Car]),
+    SequelizeModule.forFeature([Car, Driver]),
     JwtModule.register({}),
     CloudinaryModule,
   ],

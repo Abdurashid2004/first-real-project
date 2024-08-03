@@ -25,6 +25,7 @@ import { v4 } from "uuid";
 import { VerifyOtpDto } from "./dto/verify-otp.dto";
 import { RegisterDriverDto } from "./dto/register-driver.dto";
 import { SendDriverDto } from "./dto/send-driver.dto";
+import { Car } from "../car/model/car.entity";
 
 @Injectable()
 export class DriverService {
@@ -152,7 +153,8 @@ export class DriverService {
     console.log("+", registerDriverDto);
     const { phone, password } = registerDriverDto;
 
-    const findDriver = await this.driverRepo.findOne({
+    // Check if the driver already exists
+    let driver = await this.driverRepo.findOne({
       where: { phone },
     });
 
@@ -162,27 +164,40 @@ export class DriverService {
     const img1 = (await this.cloudinaryService.uploadImage(prava)).url;
 
     const hashedPassword = await bcrypt.hash(password, 7);
-    const updatedDriver = await this.driverRepo.update(
-      {
+
+    // If driver doesn't exist, create a new one
+    if (!driver) {
+      driver = await this.driverRepo.create({
+        ...registerDriverDto,
         photo: img,
         prava: img1,
-        ...registerDriverDto,
         hashed_password: hashedPassword,
         isActive: true,
-      },
-      {
-        where: { id: findDriver.id },
-        returning: true,
-      }
-    );
-    const driver = updatedDriver[1][0];
+      });
+    } else {
+      // If driver exists, update the existing record
+      const updatedDriver = await this.driverRepo.update(
+        {
+          photo: img,
+          prava: img1,
+          ...registerDriverDto,
+          hashed_password: hashedPassword,
+          isActive: true,
+        },
+        {
+          where: { id: driver.id },
+          returning: true,
+        }
+      );
+      driver = updatedDriver[1][0];
+    }
 
     const tokens = await this.getTokens(driver);
     const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 7);
 
     await this.driverRepo.update(
       { hashed_refresh_token: hashedRefreshToken },
-      { where: { id: findDriver.id } }
+      { where: { id: driver.id } }
     );
 
     res.cookie("refresh_token", tokens.refreshToken, {
@@ -393,17 +408,18 @@ export class DriverService {
   }
 
   // search driver
-
-  async findAll(searchParams: { [key: string]: any }): Promise<Driver[]> {
+  async findAll(searchParams: { [key: string]: any }) {
     const whereCondition: any = {};
 
+    // Add search conditions
     for (const key in searchParams) {
       if (searchParams[key]) {
         whereCondition[key] = { [Op.like]: `%${searchParams[key]}%` };
       }
     }
 
-    return this.driverRepo.findAll({
+    // Fetch and return results from the database
+    return await Driver.findAll({
       where: whereCondition,
     });
   }

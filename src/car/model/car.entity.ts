@@ -1,26 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
-  BelongsTo,
   Column,
   DataType,
-  ForeignKey,
-  HasMany,
   Model,
   Table,
+  BelongsToMany,
 } from "sequelize-typescript";
+import { Driver } from "../../driver/model/driver.entity";
 import { CarDriver } from "../../car_driver/model/car_driver.entity";
 
-interface ICarCreationAttr {
-  car_number: string;
-  model: string;
-  color: string;
-  photo: string;
-  car_type: string;
-  tex_passport: string;
-}
-
 @Table({ tableName: "cars" })
-export class Car extends Model<Car, ICarCreationAttr> {
+export class Car extends Model<Car> {
   @ApiProperty({
     example: "1",
     description: "The unique identifier for the car",
@@ -63,16 +53,6 @@ export class Car extends Model<Car, ICarCreationAttr> {
   color: string;
 
   @ApiProperty({
-    example: "photo",
-    description: "The photo of the car",
-  })
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  photo: string;
-
-  @ApiProperty({
     example: "texi",
     description: "The type of the car",
   })
@@ -92,6 +72,6 @@ export class Car extends Model<Car, ICarCreationAttr> {
   })
   tex_passport: string;
 
-  @HasMany(() => CarDriver)
-  drivers: CarDriver[];
+  @BelongsToMany(() => Driver, () => CarDriver)
+  drivers: Driver[];
 }

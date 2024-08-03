@@ -3,31 +3,30 @@ import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
 import { InjectModel } from "@nestjs/sequelize";
 import { Car } from "./model/car.entity";
-import { CloudinaryService } from "src/cloudinary/cloudinary.service";
+import { Driver } from "../driver/model/driver.entity";
 
 @Injectable()
 export class CarsService {
-  constructor(
-    @InjectModel(Car) private readonly carRepo: typeof Car,
-    private cloudinaryService: CloudinaryService
-  ) {}
+  constructor(@InjectModel(Car) private readonly carRepo: typeof Car) {}
 
-  async create(createCarDto: CreateCarDto, photo: Express.Multer.File) {
+  async create(createCarDto: CreateCarDto) {
     try {
-      const img = (await this.cloudinaryService.uploadImage(photo)).url;
-
-      const carData = { ...createCarDto, photo: img };
-
-      const newCar = await this.carRepo.create(carData);
-
+      const newCar = await this.carRepo.create(createCarDto);
       return { message: "Car created successfully", car: newCar };
     } catch (error) {
       return { message: "Failed to create car", error: error.message };
     }
   }
 
-  findAll() {
-    return this.carRepo.findAll({ include: { all: true } });
+  async findAll() {
+    return this.carRepo.findAll({
+      include: [
+        {
+          model: Driver,
+          through: { attributes: [] }, // Bu `through` jadvalidan faqat asosiy ma'lumotlarni olishni ta'minlaydi
+        },
+      ],
+    });
   }
 
   async findOne(id: number) {
