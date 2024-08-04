@@ -22,7 +22,7 @@ interface ICreateTaxiOrderAttr {
   clientId: number;
   driverId?: number;
   count: number;
-  price: number;
+  price: string;
   status: string;
 }
 
@@ -110,9 +110,9 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
     description: "Taxi order price",
   })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
   })
-  price: number;
+  price: string;
 
   @ApiProperty({ example: 1, description: "Taxi order distance " })
   @Column({ type: DataType.STRING })
