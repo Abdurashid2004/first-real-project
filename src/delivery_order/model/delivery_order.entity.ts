@@ -27,7 +27,7 @@ interface IDeliveryOrderInterface {
   type: string;
   distance: string;
   duration: string;
-  driverId: number;
+  driverId?: number;
   status: string;
 }
 

@@ -20,7 +20,7 @@ interface ICreateTaxiOrderAttr {
   date: string;
   location_start: string;
   clientId: number;
-  driverId: number;
+  driverId?: number;
   count: number;
   price: number;
   status: string;

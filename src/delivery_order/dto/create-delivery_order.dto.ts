@@ -93,7 +93,7 @@ export class CreateDeliveryOrderDto {
     required: true,
   })
   @IsNotEmpty()
-  driverId: number;
+  driverId?: number;
 
   @ApiProperty({
     description: "Taksi buyurtmasining hozirgi holati",

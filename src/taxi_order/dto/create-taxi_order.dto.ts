@@ -55,7 +55,7 @@ export class CreateTaxiOrderDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  driverId: number;
+  driverId?: number;
 
   @ApiProperty({
     description: "Taksi buyurtmasining soni",
@@ -69,8 +69,6 @@ export class CreateTaxiOrderDto {
     description: "Taksi buyurtmasining narxi",
     example: 50000,
   })
-  @IsNumber()
-  @IsNotEmpty()
   price: number;
 
   @ApiProperty({

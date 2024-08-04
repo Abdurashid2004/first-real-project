@@ -408,24 +408,24 @@ export class DriverService {
   }
 
   // search driver
-async findAll(searchParams: { [key: string]: any }) {
-  const whereCondition: any = {};
+  async findAll(searchParams: { [key: string]: any }) {
+    const whereCondition: any = {};
 
-  for (const key in searchParams) {
-    if (searchParams[key]) {
-      whereCondition[key] = { [Op.like]: `%${searchParams[key]}%` };
+    for (const key in searchParams) {
+      if (searchParams[key]) {
+        whereCondition[key] = { [Op.like]: `%${searchParams[key]}%` };
+      }
+    }
+
+    try {
+      return await Driver.findAll({
+        where: whereCondition,
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
     }
   }
-
-  try {
-    return await Driver.findAll({
-      where: whereCondition,
-    });
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-}
 
   // find by id driver
 
@@ -551,5 +551,24 @@ async findAll(searchParams: { [key: string]: any }) {
     return {
       message: "Driver successfully added",
     };
+  }
+
+  // update Driver By Admin
+
+  async updateDriverByAdmin(id: number, updateDriverDto: UpdateDriverDto) {
+    const driver = await this.driverRepo.findByPk(id);
+    if (!driver) throw new NotFoundException("Driver not found!");
+
+    if (updateDriverDto.password) {
+      const isMatch = await bcrypt.compare(
+        updateDriverDto.password,
+        driver.hashed_password
+      );
+      if (!isMatch) throw new BadRequestException("Invalid password!");
+
+      updateDriverDto.password = await bcrypt.hash(updateDriverDto.password, 7);
+    }
+
+    return this.driverRepo.update(updateDriverDto, { where: { id } });
   }
 }

@@ -143,7 +143,7 @@ export class ClientService {
   }
 
   // register
-  
+
   async register(askInfo: RegisterClientDto, res: Response) {
     const { name, password, phone, gender } = askInfo;
 
@@ -419,6 +419,8 @@ export class ClientService {
     return client1;
   }
 
+  ///////////////////////////////////////////////////////////////////////////// BY ADMIN ///////////////////////////////////////////////////////
+
   // Admin add client
   async createClient(registerClientDto: RegisterClientDto, res: Response) {
     try {
@@ -466,6 +468,24 @@ export class ClientService {
       return response;
     } catch (error) {
       res.status(401).json({ message: "Access Denied. No token provided." });
+    }
+  }
+
+  /////////////////////// UpdateClient By Admin ////////////////////////////
+
+  async updateClientByAdmin(id: number, updateClientDto: UpdateClientDto) {
+    try {
+      const client1 = await this.clientRepo.findByPk(id);
+      if (!client1) {
+        throw new BadRequestException(`There is no Client with such an ${id}`);
+      }
+      const client = await this.clientRepo.update(updateClientDto, {
+        where: { id },
+        returning: true,
+      });
+      return client[1][0];
+    } catch (error) {
+      throw new BadRequestException("client No");
     }
   }
 }

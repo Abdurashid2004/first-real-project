@@ -148,6 +148,18 @@ export class ClientController {
     return this.clientService.updateClient(+id, updateClientDto);
   }
 
+  @Patch(":id")
+  @ApiOperation({ summary: "Update a client By Admin" })
+  @ApiResponse({ status: 200, description: "Client updated successfully By Admin" })
+  @ApiResponse({ status: 400, description: "Bad request." })
+  @ApiParam({ name: "id", required: true, description: "Client ID" })
+  updateClientByAdmin(
+    @Param("id") id: number,
+    @Body() updateClientDto: UpdateClientDto
+  ) {
+    return this.clientService.updateClientByAdmin(+id, updateClientDto);
+  }
+
   @Delete(":id")
   @ApiOperation({ summary: "Remove a client" })
   @ApiResponse({ status: 200, description: "Client removed successfully." })

@@ -230,6 +230,21 @@ export class DriverController {
     return this.driverService.update(+id, updateDriverDto);
   }
 
+  @Patch(":id")
+  @ApiOperation({ summary: "Update a driver" })
+  @ApiParam({ name: "id", description: "Driver ID" })
+  @ApiResponse({
+    status: 200,
+    description: "Driver updated successfully",
+    type: Driver,
+  })
+  updateDriver(
+    @Param("id") id: string,
+    @Body() updateDriverDto: UpdateDriverDto
+  ) {
+    return this.driverService.updateDriverByAdmin(+id, updateDriverDto);
+  }
+
   @Delete(":id")
   @ApiOperation({ summary: "Delete a driver" })
   @ApiParam({ name: "id", description: "Driver ID" })
