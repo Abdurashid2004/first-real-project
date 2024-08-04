@@ -40,4 +40,4 @@ jobs:
         USER: ${{ secrets.USER }}
         PASSWORD: ${{ secrets.PASSWORD }}
       run: |
-        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USER@$SERVER "pm2 stop bobur && cd first-real-project && git pull && npm install && npm run build && pm2 start dist/main.js --name bobur"
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USER@$SERVER "pm2 stop Abdurashid && cd first-real-project && git pull && npm install && npm run build && pm2 start dist/main.js --name Abdurashid"
