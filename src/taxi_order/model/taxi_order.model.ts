@@ -22,7 +22,7 @@ interface ICreateTaxiOrderAttr {
   clientId: number;
   driverId?: number;
   count: number;
-  price: string;
+  price: number;
   status: string;
 }
 
@@ -63,7 +63,7 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
   })
   @Column({
     type: DataType.STRING,
-    defaultValue: "In Progress", 
+    defaultValue: "In Progress",
   })
   status: string;
 
@@ -110,9 +110,9 @@ export class TaxiOrder extends Model<TaxiOrder, ICreateTaxiOrderAttr> {
     description: "Taxi order price",
   })
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
   })
-  price: string;
+  price: number;
 
   @ApiProperty({ example: 1, description: "Taxi order distance " })
   @Column({ type: DataType.STRING })
