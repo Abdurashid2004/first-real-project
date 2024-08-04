@@ -103,4 +103,11 @@ export class CreateDeliveryOrderDto {
   @IsString()
   @IsNotEmpty()
   status: string;
+
+  @ApiProperty({
+    description: "Taksi buyurtmasining hozirgi holati",
+    example: "In Progress",
+    required: true,
+  })
+  price: string;
 }

@@ -29,6 +29,7 @@ interface IDeliveryOrderInterface {
   duration: string;
   driverId?: number;
   status: string;
+  price: string;
 }
 
 @Table({ tableName: "delivery-order" })
@@ -151,6 +152,16 @@ export class DeliveryOrder extends Model<
     allowNull: false,
   })
   location_start: string;
+
+  @ApiProperty({
+    example: "500.00",
+    description: "Price",
+  })
+  @Column({
+    type: DataType.STRING,
+    // allowNull: false,
+  })
+  price: string;
 
   @ApiProperty({ example: "Regular", description: "Type of delivery" })
   @Column({
