@@ -13,6 +13,7 @@ import { DeliveryOrderModule } from "./delivery_order/delivery_order.module";
 import { BalanceModule } from "./balance/balance.module";
 import { DriverModule } from "./driver/driver.module";
 import { CarModule } from "./car/car.module";
+import { DatabaseService } from "./database.service";
 
 @Module({
   imports: [
@@ -58,6 +59,6 @@ import { CarModule } from "./car/car.module";
 
   controllers: [],
 
-  providers: [],
+  providers: [DatabaseService],
 })
 export class AppModule {}
