@@ -69,7 +69,7 @@ export class CreateTaxiOrderDto {
     description: "Taksi buyurtmasining narxi",
     example: 50000,
   })
-  price: number;
+  price: string;
 
   @ApiProperty({
     description: "Taksi buyurtmasining hozirgi holati",
@@ -77,5 +77,5 @@ export class CreateTaxiOrderDto {
   })
   @IsString()
   @IsNotEmpty()
-  status: string;
+  status?: string;
 }
