@@ -36,7 +36,6 @@ export class DistrictsService {
     return this.districtRepo.findByPk(id, { include: { all: true } });
   }
 
-
   update(id: number, updateDistrictDto: UpdateDistrictDto) {
     return this.districtRepo.update(updateDistrictDto, {
       where: { id },
