@@ -119,7 +119,7 @@ export class AdminService {
         id: updatedAdmin.id,
         login: updatedAdmin.login,
         tg_link: updatedAdmin.tg_link,
-        photo: updatedAdmin.photo,
+
         is_active: updatedAdmin.is_active,
         is_creator: updatedAdmin.is_creator,
         createdAt: updatedAdmin.createdAt,
@@ -268,6 +268,9 @@ export class AdminService {
     const admin1 = await this.adminRepo.findByPk(id);
     if (!admin1) {
       throw new BadRequestException(`There is no Admin with id ${id}`);
+    }
+    if (updateAdminDto.password) {
+      updateAdminDto.password = await bcrypt.hash(updateAdminDto.password, 7);
     }
     const admin = await this.adminRepo.update(updateAdminDto, {
       where: { id },
