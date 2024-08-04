@@ -12,7 +12,6 @@ import { Balance } from "../../balance/model/balance.entity";
 import { DeliveryOrder } from "../../delivery_order/model/delivery_order.entity";
 import { TaxiOrder } from "../../taxi_order/model/taxi_order.model";
 import { Car } from "../../car/model/car.entity";
-import { CarDriver } from "../../car_driver/model/car_driver.entity";
 
 export interface IDriverAttr {
   name: string;
@@ -26,6 +25,7 @@ export interface IDriverAttr {
   password: string;
   isActive: boolean;
   hashed_password: string;
+  hashed_refresh_token: string; // Added to interface
 }
 
 @Table({ tableName: "drivers" })
@@ -113,7 +113,7 @@ export class Driver extends Model<Driver, IDriverAttr> {
 
   @ApiProperty({
     example: "0594grjoitjrgijgrjjfrb",
-    description: "hashed refresh token for driver",
+    description: "Hashed refresh token for driver",
   })
   @Column({
     type: DataType.STRING,
@@ -128,7 +128,7 @@ export class Driver extends Model<Driver, IDriverAttr> {
   @HasOne(() => Balance)
   balance: Balance;
 
-  @BelongsToMany(() => Car, () => CarDriver)
+  @HasOne(() => Car)
   cars: Car[];
 
   @HasMany(() => DeliveryOrder)

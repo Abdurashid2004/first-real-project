@@ -51,7 +51,7 @@ export class DriverController {
   }
 
   @Post("checkOtp")
-  @ApiOperation({ summary: "check an OTP" })
+  @ApiOperation({ summary: "Check an OTP" })
   @ApiResponse({ status: 200, description: "OTP checked successfully." })
   @ApiResponse({ status: 400, description: "Bad request." })
   verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
@@ -81,11 +81,8 @@ export class DriverController {
   ) {
     const photo = files.photo?.[0];
     const prava = files.prava?.[0];
-    // console.log(res);
     return this.driverService.register(registerDriverDto, photo, prava, res);
   }
-
-  /////////////////////////
 
   @Post("refresh/:id")
   @ApiOperation({ summary: "Refresh client token" })
@@ -113,8 +110,6 @@ export class DriverController {
   ) {
     return this.driverService.logOut(refreshToken, res);
   }
-
-  /////////////////////////
 
   @Post("login")
   @ApiOperation({ summary: "Login a driver" })
@@ -255,32 +250,5 @@ export class DriverController {
   })
   async findOrder(@Body() findOrderDto: FindOrderDto) {
     return this.driverService.findOrder(findOrderDto);
-  }
-
-  @Post("register")
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "photo", maxCount: 1 },
-      { name: "prava", maxCount: 1 },
-    ])
-  )
-  @ApiOperation({ summary: "Register a new driver with photo and prava files" })
-  @ApiConsumes("multipart/form-data")
-  @ApiBody({ type: RegisterDriverDto })
-  @ApiResponse({
-    status: 201,
-    description: "Driver registered successfully",
-    type: Driver,
-  })
-  createDriver(
-    @Body() registerDriverDto: RegisterDriverDto,
-    @UploadedFiles()
-    files: { photo?: Express.Multer.File[]; prava?: Express.Multer.File[] },
-    @Res({ passthrough: true }) res: Response
-  ) {
-    const photo = files.photo?.[0];
-    const prava = files.prava?.[0];
-    // console.log(res);
-    return this.driverService.createDriver(registerDriverDto, photo, prava, res);
   }
 }

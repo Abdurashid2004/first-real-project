@@ -4,10 +4,10 @@ import {
   DataType,
   Model,
   Table,
-  BelongsToMany,
+  ForeignKey,
+  BelongsTo,
 } from "sequelize-typescript";
 import { Driver } from "../../driver/model/driver.entity";
-import { CarDriver } from "../../car_driver/model/car_driver.entity";
 
 @Table({ tableName: "cars" })
 export class Car extends Model<Car> {
@@ -72,6 +72,17 @@ export class Car extends Model<Car> {
   })
   tex_passport: string;
 
-  @BelongsToMany(() => Driver, () => CarDriver)
-  drivers: Driver[];
+  @ForeignKey(() => Driver)
+  @ApiProperty({
+    example: "1",
+    description: "Driver ID",
+  })
+  @Column({
+    type: DataType.INTEGER,
+    // allowNull: false,
+  })
+  driverId: number;
+
+  @BelongsTo(() => Driver)
+  drivers: Driver;
 }

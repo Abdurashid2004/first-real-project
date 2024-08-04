@@ -408,21 +408,24 @@ export class DriverService {
   }
 
   // search driver
-  async findAll(searchParams: { [key: string]: any }) {
-    const whereCondition: any = {};
+async findAll(searchParams: { [key: string]: any }) {
+  const whereCondition: any = {};
 
-    // Add search conditions
-    for (const key in searchParams) {
-      if (searchParams[key]) {
-        whereCondition[key] = { [Op.like]: `%${searchParams[key]}%` };
-      }
+  for (const key in searchParams) {
+    if (searchParams[key]) {
+      whereCondition[key] = { [Op.like]: `%${searchParams[key]}%` };
     }
+  }
 
-    // Fetch and return results from the database
+  try {
     return await Driver.findAll({
       where: whereCondition,
     });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
   }
+}
 
   // find by id driver
 

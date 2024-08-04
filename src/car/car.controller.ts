@@ -7,11 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  UseInterceptors,
-  UploadedFiles,
   BadRequestException,
   InternalServerErrorException,
-  UploadedFile,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -21,14 +18,12 @@ import {
   ApiInternalServerErrorResponse,
   ApiParam,
   ApiBody,
-  ApiConsumes,
 } from "@nestjs/swagger";
 import { CarsService } from "./car.service";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
 import { Car } from "./model/car.entity";
 import { AdminGuard } from "src/guards/admin.guard";
-import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("Cars")
 @Controller("car")
@@ -58,9 +53,8 @@ export class CarsController {
   // @UseGuards(AdminGuard)
   @ApiOkResponse({ description: "Successfully retrieved cars", type: [Car] })
   @ApiInternalServerErrorResponse({ description: "Internal server error" })
-  @Get()
-  async findAll(): Promise<Car[]> {
-    return await this.carsService.findAll();
+  async getCars() {
+    return await this.carsService.findAllCars();
   }
 
   @Get(":id")
