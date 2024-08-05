@@ -20,6 +20,7 @@ import { Driver } from "src/driver/model/driver.entity";
 export class TaxiOrderService {
   constructor(
     @InjectModel(TaxiOrder) private taxiOrderRepo: typeof TaxiOrder,
+
     @InjectModel(Region)
     private readonly regionModel: typeof Region,
     @InjectModel(District)
@@ -185,3 +186,17 @@ export class TaxiOrderService {
     return this.taxiOrderRepo.destroy({ where: { id } });
   }
 }
+
+// <temp>
+  
+//   <Auth>
+// </Auth>
+// </temp>
+// ------
+
+
+// < tes >
+//   <h1>sCxlaom</h1>
+  
+//   <slot></slot>
+//   <tes/>

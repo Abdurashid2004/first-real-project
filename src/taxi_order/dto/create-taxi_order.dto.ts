@@ -49,8 +49,6 @@ export class CreateTaxiOrderDto {
   @IsNotEmpty()
   clientId: number;
 
-
-
   @ApiProperty({
     description: "Taksi buyurtmasining soni",
     example: 2,
@@ -64,4 +62,11 @@ export class CreateTaxiOrderDto {
     example: 50000,
   })
   price: string;
+
+  @ApiProperty({
+    description: "Taksi buyurtmasining hozirgi holati",
+    example: "In Progress",
+    default: "In Progress",
+  })
+  status?: string;
 }
