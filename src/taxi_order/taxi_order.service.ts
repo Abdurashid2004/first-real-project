@@ -87,17 +87,12 @@ export class TaxiOrderService {
 
   async create(createTaxiOrderDto: CreateTaxiOrderDto) {
     try {
-      const { from_distinct_id, to_distinct_id, clientId, driverId } =
+      const { from_distinct_id, to_distinct_id, clientId} =
         createTaxiOrderDto;
 
       const client = await this.clientService.findOneClient(clientId);
       if (!client) {
         throw new NotFoundException("Client with the given ID does not exist");
-      }
-
-      const driver = await this.driverService.findOne(driverId);
-      if (!driver) {
-        throw new NotFoundException("Driver with the given ID does not exist");
       }
 
       const districtFrom =

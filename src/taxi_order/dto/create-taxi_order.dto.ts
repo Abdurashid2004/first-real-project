@@ -49,12 +49,7 @@ export class CreateTaxiOrderDto {
   @IsNotEmpty()
   clientId: number;
 
-  @ApiProperty({
-    description: "Taksi buyurtmasining haydovchi ID",
-    example: 20,
-    required: false,
-  })
-  driverId?: number;
+
 
   @ApiProperty({
     description: "Taksi buyurtmasining soni",

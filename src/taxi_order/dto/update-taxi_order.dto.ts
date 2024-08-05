@@ -9,4 +9,11 @@ export class UpdateTaxiOrderDto {
   @IsString()
   @IsNotEmpty()
   status: string;
+
+  @ApiProperty({
+    description: "Taksi buyurtmasining haydovchi ID",
+    example: 20,
+    required: false,
+  })
+  driverId?: number;
 }
