@@ -282,7 +282,7 @@ export class DriverService {
     if (!findDriver) throw new NotFoundException("Driver not foudn!");
     if (!summaDto.sum) throw new BadRequestException("Sum is required!");
 
-    findDriver.total_balance = String(+findDriver.total_balance + summaDto.sum);
+    findDriver.total_balance = +findDriver.total_balance + summaDto.sum;
     await findDriver.save();
 
     delete findDriver.hashed_password;
@@ -307,7 +307,7 @@ export class DriverService {
       );
 
     // Balansni kamaytirish
-    findDriver.total_balance = String(+findDriver.total_balance -  summaDto.sum)
+    findDriver.total_balance = +findDriver.total_balance -  summaDto.sum
     await findDriver.save();
 
     // Parol va refresh tokenni javobdan o'chirish
