@@ -54,7 +54,6 @@ export class CreateTaxiOrderDto {
     example: 20,
   })
   @IsNumber()
-  @IsNotEmpty()
   driverId?: number;
 
   @ApiProperty({
@@ -76,6 +75,5 @@ export class CreateTaxiOrderDto {
     example: "In Progress",
   })
   @IsString()
-  @IsNotEmpty()
   status?: string;
 }

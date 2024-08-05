@@ -179,6 +179,7 @@ export class ClientService {
             returning: true,
           }
         );
+      console.log(name);
 
       if (numberOfAffectedRows === 0 || !updatedUser) {
         throw new BadRequestException("Failed to update user");
@@ -193,7 +194,6 @@ export class ClientService {
         user: updatedUser,
         tokens,
       };
-      console.log(response);
 
       return response;
     } catch (error) {
